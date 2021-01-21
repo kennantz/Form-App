@@ -37,11 +37,7 @@ class FindFormController: UITableViewController, UITextFieldDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         
-        if forms.count != 0 {
-            
-        } else {
-            observeAllFormUID()
-        }
+        observeAllFormUID()
         
     }
     
@@ -151,6 +147,73 @@ extension FindFormController {
 
     }
     
+    func checkFormStatus(formIDSearched: String, textField: UITextField) {
+        
+        var counter = 1
+        
+        for item in forms {
+            
+            if item.status == "Unpublished" {
+                
+                ///Uncomment this to filter unpublished form
+//                let popUp = UIAlertController(title: "We're sorry for the inconvenience", message: "Form ID not found, please try again.", preferredStyle: .alert)
+//                popUp.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
+//                    textField.text = ""
+//                }))
+//
+//                self.present(popUp, animated: true) {}
+                ///=====================
+                
+                ///Uncomment this to by pass form status checking
+                let generator = UINotificationFeedbackGenerator()
+                generator.notificationOccurred(.success)
+                
+                let fillFormController = FillFormController(style: .insetGrouped)
+                fillFormController.formID = item.id
+                fillFormController.formTitle = item.title
+                textField.text = ""
+                navigationController?.pushViewController(fillFormController, animated: true)
+                ///=====================
+                
+                break
+                
+            } else {
+                
+                if item.uid == formIDSearched {
+                    
+                    let generator = UINotificationFeedbackGenerator()
+                    generator.notificationOccurred(.success)
+                    
+                    let fillFormController = FillFormController(style: .insetGrouped)
+                    fillFormController.formID = item.id
+                    fillFormController.formTitle = item.title
+                    textField.text = ""
+                    navigationController?.pushViewController(fillFormController, animated: true)
+                    break
+                    
+                } else {
+                    
+                    if counter != forms.count {
+                        counter += 1
+                    } else {
+                        
+                        let popUp = UIAlertController(title: "We're sorry for the inconvenience", message: "Form ID not found, please try again.", preferredStyle: .alert)
+                        popUp.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
+                            textField.text = ""
+                        }))
+                        
+                        self.present(popUp, animated: true) {}
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
     func textFieldDidEndEditing(_ textField: UITextField) {
         
         let formIDSearched = textField.text
@@ -159,55 +222,7 @@ extension FindFormController {
             
         } else {
             
-            var counter = 1
-            
-            for item in forms {
-                
-                if item.status == "Unpublished" {
-                    
-                    let popUp = UIAlertController(title: "We're sorry for the inconvenience", message: "Form ID not found, please try again.", preferredStyle: .alert)
-                    popUp.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
-                        textField.text = ""
-                    }))
-                    
-                    self.present(popUp, animated: true) {}
-                    
-                    break
-                    
-                } else {
-                    
-                    if item.uid == formIDSearched {
-                        
-                        let generator = UINotificationFeedbackGenerator()
-                        generator.notificationOccurred(.success)
-                        
-                        let fillFormController = FillFormController(style: .insetGrouped)
-                        fillFormController.formID = item.id
-                        fillFormController.formTitle = item.title
-                        textField.text = ""
-                        navigationController?.pushViewController(fillFormController, animated: true)
-                        break
-                        
-                    } else {
-                        
-                        if counter != forms.count {
-                            counter += 1
-                        } else {
-                            
-                            let popUp = UIAlertController(title: "We're sorry for the inconvenience", message: "Form ID not found, please try again.", preferredStyle: .alert)
-                            popUp.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
-                                textField.text = ""
-                            }))
-                            
-                            self.present(popUp, animated: true) {}
-                            
-                        }
-                        
-                    }
-                    
-                }
-                
-            }
+            checkFormStatus(formIDSearched: formIDSearched!, textField: textField)
             
         }
         
