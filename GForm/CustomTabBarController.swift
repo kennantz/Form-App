@@ -18,14 +18,6 @@ class CustomTabBarController: UITabBarController {
         return formsMenuController
     }()
     
-    let findFormController: UINavigationController = {
-        let find = FindFormController(style: .insetGrouped)
-        let findFormMenuController = UINavigationController(rootViewController: find)
-        findFormMenuController.title = "Find"
-        findFormMenuController.tabBarItem.image = UIImage(named: "searchIcon")
-        return findFormMenuController
-    }()
-    
     let accountController: UINavigationController = {
         let account = AccountController(style: .insetGrouped)
         let accountMenuController = UINavigationController(rootViewController: account)
@@ -42,7 +34,7 @@ class CustomTabBarController: UITabBarController {
         
         setupSplashScreen()
         
-        viewControllers = [formsController, findFormController, accountController]
+        viewControllers = [formsController, accountController]
         tabBar.isTranslucent = true
         
         let topBorder = CALayer()

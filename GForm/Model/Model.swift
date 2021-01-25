@@ -7,15 +7,14 @@
 
 import Foundation
 
-var forms = [Form]()
+var privateForms = [Form]()
+var developerForms = [Form]()
 
 class Form: NSObject {
     var id: String?
-    var uid: String?
     var title: String?
     var creationTimestamp: NSNumber?
     var numberOfResponse: Int?
-    var status: String?
 }
 
 var userDatas = [UserData]()
@@ -56,6 +55,21 @@ class ResponseElement: NSObject {
     var seqNo: String?
     var color: String?
     var response: String?
+    var responses: [String]?
+}
+
+var fillElementsDictionary = [String: FillElement]()
+
+var fillElements = [FillElement]()
+
+class FillElement: NSObject {
+    var id: String?
+    var title: String?
+    var dataType: String?
+    var seqNo: String?
+    var color: String?
+    var response: String?
+    var responses: [String]?
 }
 
 var developerMenus = [DeveloperMenu]()

@@ -12,20 +12,37 @@ class FillFormController: UITableViewController, UITextFieldDelegate, UITextView
     
     var formID: String?
     
+    var numberOfElement: Int? {
+        didSet {
+            if numberOfElement == 0 {
+                fillElementsDictionary.removeAll()
+                fillElements.removeAll()
+                noElementLabel.alpha = 1
+                self.tableView.reloadData()
+            } else {
+                noElementLabel.alpha = 0
+                observeElements()
+            }
+        }
+    }
+    
     var formTitle: String? {
         didSet {
             navigationItem.title = formTitle
         }
     }
     
-    let activityIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+    lazy var noElementLabel: UILabel = {
+        let label = UILabel()
+        label.text = "No elements yet."
+        label.textAlignment = .center
+        label.textColor = .label
+        label.font = UIFont.systemFont(ofSize: fourteen, weight: .regular)
+        label.alpha = 0
+        return label
+    }()
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
-        
-        observeElements()
-        
-    }
+    let activityIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,6 +56,12 @@ class FillFormController: UITableViewController, UITextFieldDelegate, UITextView
         tapGestureRecognizer.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGestureRecognizer)
         
+        view.addSubview(noElementLabel)
+        
+        noElementLabel.centerXAnchor.constraint(equalTo: tableView.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        noElementLabel.centerYAnchor.constraint(equalTo: tableView.safeAreaLayoutGuide.centerYAnchor).isActive = true
+        noElementLabel.anchor(nil, left: nil, bottom: nil, right: nil, topConstant: 0, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: view.frame.width, heightConstant: thirty)
+        
         tableView.showsVerticalScrollIndicator = false
         
     }
@@ -46,9 +69,9 @@ class FillFormController: UITableViewController, UITextFieldDelegate, UITextView
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .value1, reuseIdentifier: "cellId")
 
-        if responseElements[indexPath.section].dataType != "Date" {
+        if fillElements[indexPath.section].dataType != "Date" {
             
-            if responseElements[indexPath.section].dataType == "Long Text" {
+            if fillElements[indexPath.section].dataType == "Long Text" {
                 
                 let view = UIView()
                 
@@ -62,16 +85,16 @@ class FillFormController: UITableViewController, UITextFieldDelegate, UITextView
                 responseTextField.delegate = self
                 responseTextField.tag = indexPath.section
                 
-                if responseElements[indexPath.section].response != "" {
-                    responseTextField.text = responseElements[indexPath.section].response
+                if fillElements[indexPath.section].response != "" {
+                    responseTextField.text = fillElements[indexPath.section].response
                     responseTextField.textColor = .label
                 } else {
-                    responseTextField.text = "\(responseElements[indexPath.section].dataType ?? "") response here"
+                    responseTextField.text = "\(fillElements[indexPath.section].dataType ?? "") response here"
                     responseTextField.textColor = .tertiaryLabel
                 }
                 
                 responseTextField.font = UIFont.systemFont(ofSize: eighteen)
-                responseTextField.backgroundColor = hexStringToUIColor(hex: responseElements[indexPath.section].color ?? "")
+                responseTextField.backgroundColor = hexStringToUIColor(hex: fillElements[indexPath.section].color ?? "")
                 responseTextField.anchor(view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, topConstant: four, leftConstant: fourteen, bottomConstant: 0, rightConstant: 0, widthConstant: 0, heightConstant: 0)
                 
             } else {
@@ -88,17 +111,17 @@ class FillFormController: UITableViewController, UITextFieldDelegate, UITextView
                 responseTextField.delegate = self
                 responseTextField.tag = indexPath.section
                 
-                if responseElements[indexPath.section].dataType == "Number" {
+                if fillElements[indexPath.section].dataType == "Number" {
                     responseTextField.keyboardType = .numberPad
                 } else {
                     responseTextField.keyboardType = .default
                 }
                 
-                if responseElements[indexPath.section].response != "" {
-                    responseTextField.text = responseElements[indexPath.section].response
+                if fillElements[indexPath.section].response != "" {
+                    responseTextField.text = fillElements[indexPath.section].response
                 }
                 
-                responseTextField.placeholder = "\(responseElements[indexPath.section].dataType ?? "") response here"
+                responseTextField.placeholder = "\(fillElements[indexPath.section].dataType ?? "") response here"
                 responseTextField.anchor(view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, topConstant: 0, leftConstant: fourteen, bottomConstant: 0, rightConstant: 0, widthConstant: 0, heightConstant: 0)
                 
             }
@@ -115,9 +138,9 @@ class FillFormController: UITableViewController, UITextFieldDelegate, UITextView
             picker.tag = indexPath.section
             picker.addTarget(self, action: #selector(datePickerValueChanged), for: .valueChanged)
             
-            if responseElements[indexPath.section].response != "" {
+            if fillElements[indexPath.section].response != "" {
                 
-                let unixTimestamp = Double(responseElements[indexPath.section].response!)
+                let unixTimestamp = Double(fillElements[indexPath.section].response!)
                 let date = Date(timeIntervalSince1970: unixTimestamp!)
                 
                 picker.date = date
@@ -137,14 +160,14 @@ class FillFormController: UITableViewController, UITextFieldDelegate, UITextView
         }
         
         cell.contentView.isUserInteractionEnabled = false
-        cell.backgroundColor = hexStringToUIColor(hex: responseElements[indexPath.section].color ?? "")
+        cell.backgroundColor = hexStringToUIColor(hex: fillElements[indexPath.section].color ?? "")
         
         return cell
         
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return responseElements.count
+        return fillElements.count
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -152,11 +175,11 @@ class FillFormController: UITableViewController, UITextFieldDelegate, UITextView
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return responseElements[section].title
+        return fillElements[section].title
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if responseElements[indexPath.section].dataType == "Long Text" {
+        if fillElements[indexPath.section].dataType == "Long Text" {
             return oneFifty
         }
         return fifty
@@ -168,6 +191,8 @@ extension FillFormController {
     
     private func setupNavbar() {
         
+        navigationItem.title = "Fill Form"
+        
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.setRightBarButton(UIBarButtonItem(title: "Submit", style: .plain, target: self, action: #selector(handleCheckSubmitForm)), animated: true)
         
@@ -177,8 +202,8 @@ extension FillFormController {
     
     private func observeElements() {
         
-        responseElementsDictionary.removeAll()
-        responseElements.removeAll()
+        fillElementsDictionary.removeAll()
+        fillElements.removeAll()
         
         self.tableView.isUserInteractionEnabled = false
         
@@ -201,7 +226,7 @@ extension FillFormController {
                 let seqNo = dictionary["Seq No"] as? String
                 let color = dictionary["Color"] as? String
                 
-                let responseElement = ResponseElement()
+                let responseElement = FillElement()
                 responseElement.id = elementID
                 responseElement.title = title
                 responseElement.dataType = dataType
@@ -216,11 +241,11 @@ extension FillFormController {
                     responseElement.response = ""
                 }
                 
-                responseElements.append(responseElement)
+                fillElements.append(responseElement)
                 
-                responseElementsDictionary[elementID] = responseElement
-                responseElements = Array(responseElementsDictionary.values)
-                responseElements.sort(by: { (element1, element2) -> Bool in
+                fillElementsDictionary[elementID] = responseElement
+                fillElements = Array(fillElementsDictionary.values)
+                fillElements.sort(by: { (element1, element2) -> Bool in
                     
                     return (Int(element1.seqNo!)!) < (Int(element2.seqNo!)!)
                     
@@ -253,7 +278,7 @@ extension FillFormController {
         
         var counter = 0
         
-        for item in responseElements {
+        for item in fillElements {
             
             if item.response == "" {
                 
@@ -269,7 +294,7 @@ extension FillFormController {
                 
             } else {
                 
-                if counter == responseElements.count - 1 {
+                if counter == fillElements.count - 1 {
                     handleSubmitForm()
                 } else {
                     counter += 1
@@ -283,103 +308,94 @@ extension FillFormController {
     
     private func handleSubmitForm() {
         
-        self.tableView.isUserInteractionEnabled = false
+        if numberOfElement == 0 {
+            
+        } else {
+            
+            self.tableView.isUserInteractionEnabled = false
 
-        var barButton = UIBarButtonItem(customView: activityIndicator)
-        self.navigationItem.rightBarButtonItem = barButton
+            var barButton = UIBarButtonItem(customView: activityIndicator)
+            self.navigationItem.rightBarButtonItem = barButton
 
-        activityIndicator.startAnimating()
+            activityIndicator.startAnimating()
 
-        guard let currentUID = Auth.auth().currentUser?.uid else {
-            return
-        }
+            var counter = 0
 
-        var counter = 0
+            Database.database().reference().child("Forms").child(self.formID!).child("Other").observeSingleEvent(of: .value) { (snapshot) in
 
-        let responsesRef = Database.database().reference().child("Responses").childByAutoId()
-        let responseKey = responsesRef.key
-
-        let userIDResponseValue = ["User ID": currentUID]
-
-        responsesRef.child("Other").updateChildValues(userIDResponseValue) { (error, ref) in
-
-            if error != nil {
-                print(error!)
-                return
-            }
-
-            let responseIDValue = [responseKey: 1]
-
-            Database.database().reference().child("Forms").child(self.formID!).child("Responses").updateChildValues(responseIDValue) { (error, ref) in
-
-                if error != nil {
-                    print(error!)
+                guard let dictionary = snapshot.value as? [String: AnyObject] else {
                     return
                 }
 
-                Database.database().reference().child("Forms").child(self.formID!).child("Other").observeSingleEvent(of: .value) { (snapshot) in
+                let numberOfResponse = dictionary["Number of Response"] as? Int
+                let numberOfResponseAfter = numberOfResponse! + 1
+                let numberOfResponseAfterValue = ["Number of Response": numberOfResponseAfter]
 
-                    guard let dictionary = snapshot.value as? [String: AnyObject] else {
+                Database.database().reference().child("Forms").child(self.formID!).child("Other").updateChildValues(numberOfResponseAfterValue) { (error, ref) in
+
+                    if error != nil {
+                        print(error!)
                         return
                     }
 
-                    let numberOfResponse = dictionary["Number of Response"] as? Int
-                    let numberOfResponseAfter = numberOfResponse! + 1
-                    let numberOfResponseAfterValue = ["Number of Response": numberOfResponseAfter]
+                    for item in fillElements {
+                        
+                        let elementID = item.id
+                        let responseValue = ["Response": item.response]
+                        
+                        let responsesRef = Database.database().reference().child("Responses").childByAutoId()
+                        let responseKey = responsesRef.key
 
-                    Database.database().reference().child("Forms").child(self.formID!).child("Other").updateChildValues(numberOfResponseAfterValue) { (error, ref) in
+                        let responseIDValue = [responseKey: 1]
+                        
+                        Database.database().reference().child("Elements").child(elementID!).child("Responses").updateChildValues(responseIDValue) { (error, ref) in
 
-                        if error != nil {
-                            print(error!)
-                            return
+                            if error != nil {
+                                print(error!)
+                                return
+                            }
+
                         }
+                        
+                        responsesRef.updateChildValues(responseValue as [AnyHashable : Any]) { (error, ref) in
 
-                        for item in responseElements {
+                            if error != nil {
+                                print(error!)
+                                return
+                            }
                             
-                            let elementID = item.id
-                            let responseValue = ["Response": item.response]
-                            
-                            responsesRef.child("Elements").child(elementID!).updateChildValues(responseValue as [AnyHashable : Any]) { (error, ref) in
-
-                                if error != nil {
-                                    print(error!)
-                                    return
-                                }
+                            if counter == fillElements.count - 1 {
                                 
-                                if counter == responseElements.count - 1 {
-                                    
-                                    self.activityIndicator.stopAnimating()
+                                self.activityIndicator.stopAnimating()
 
-                                    barButton = UIBarButtonItem(title: "Submit", style: .plain, target: self, action: #selector(self.handleCheckSubmitForm))
-                                    self.navigationItem.rightBarButtonItem = barButton
+                                barButton = UIBarButtonItem(title: "Submit", style: .plain, target: self, action: #selector(self.handleCheckSubmitForm))
+                                self.navigationItem.rightBarButtonItem = barButton
 
-                                    self.tableView.isUserInteractionEnabled = true
+                                self.tableView.isUserInteractionEnabled = true
 
-                                    let alert = UIAlertController(title: "Your response has been submitted successfully!", message: "Thankyou for filling this form😊", preferredStyle: .alert)
+                                let alert = UIAlertController(title: "Your response has been submitted successfully!", message: "Thankyou for filling this form😊", preferredStyle: .alert)
 
-                                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [self] (_) in
+                                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [self] (_) in
 
-                                        self.navigationController?.popViewController(animated: true)
+                                    self.navigationController?.popViewController(animated: true)
 
-                                    }))
-                                    self.present(alert, animated: true, completion: nil)
-                                    
-                                } else {
-                                    
-                                    counter += 1
-                                    
-                                }
+                                }))
+                                self.present(alert, animated: true, completion: nil)
+                                
+                            } else {
+                                
+                                counter += 1
                                 
                             }
                             
                         }
                         
                     }
-
+                    
                 }
 
             }
-
+            
         }
         
     }
@@ -387,7 +403,7 @@ extension FillFormController {
     func textFieldDidEndEditing(_ textField: UITextField) {
         
         let index = textField.tag
-        responseElements[index].response = textField.text
+        fillElements[index].response = textField.text
         self.tableView.reloadSections(IndexSet(integersIn: index...index), with: .none)
         
     }
@@ -397,10 +413,10 @@ extension FillFormController {
         let index = textView.tag
         
         if textView.text.isEmpty {
-            textView.text = "\(responseElements[index].dataType ?? "") response here"
+            textView.text = "\(fillElements[index].dataType ?? "") response here"
             textView.textColor = UIColor.tertiaryLabel
         } else {
-            responseElements[index].response = textView.text
+            fillElements[index].response = textView.text
             self.tableView.reloadSections(IndexSet(integersIn: index...index), with: .none)
         }
         
@@ -428,7 +444,7 @@ extension FillFormController {
             
         let index = sender.tag
         
-        responseElements[index].response = String(sender.date.timeIntervalSince1970)
+        fillElements[index].response = String(sender.date.timeIntervalSince1970)
         self.tableView.reloadSections(IndexSet(integersIn: index...index), with: .none)
         
     }

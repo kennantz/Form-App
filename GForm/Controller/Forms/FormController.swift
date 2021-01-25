@@ -11,13 +11,6 @@ import Firebase
 class FormController: UITableViewController {
 
     var formID: String?
-    var formStatus: String?
-    
-    var formTitle: String? {
-        didSet {
-            navigationItem.title = formTitle
-        }
-    }
     
     var refreshController = UIRefreshControl()
 
@@ -173,12 +166,13 @@ extension FormController {
     
     private func setupNavbar() {
         
+        navigationItem.title = "Edit Form"
+        
         let addButton = UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(addNewElement))
-        let publishButton = UIBarButtonItem(image: UIImage(named: "publishIcon"), style: .plain, target: self, action: #selector(handlePublishForm))
-
+        
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        navigationItem.rightBarButtonItems = [addButton, publishButton]
+        navigationItem.rightBarButtonItems = [addButton]
         
         activityIndicator.style = .medium
         
@@ -305,64 +299,6 @@ extension FormController {
         let createElementController = CreateElementController(style: .insetGrouped)
         createElementController.formID = formID
         navigationController?.pushViewController(createElementController, animated: true)
-        
-    }
-    
-    @objc private func handlePublishForm() {
-        
-        if formStatus == "Unpublished" {
-            
-            let alert = UIAlertController(title: "Are you sure want to publish this form?", message: "Once you publish your form, it will be available for everyone to send response", preferredStyle: .alert)
-
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [self] (_) in
-
-                self.startLoadingSetup()
-                
-                let statusValue = ["Status": "Published"]
-                
-                Database.database().reference().child("Forms").child(formID!).child("Other").updateChildValues(statusValue) { (error, ref) in
-                    
-                    if error != nil {
-                        print(error!)
-                        return
-                    }
-                    
-                    self.endLoadingSetup()
-                    self.successPublishForm()
-                    
-                }
-
-            }))
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
-                
-            }))
-            self.present(alert, animated: true, completion: nil)
-            
-        } else {
-            
-            let alert = UIAlertController(title: "Your form is already published.", message: "", preferredStyle: .alert)
-
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [self] (_) in
-
-                self.navigationController?.popViewController(animated: true)
-
-            }))
-            self.present(alert, animated: true, completion: nil)
-            
-        }
-        
-    }
-    
-    private func successPublishForm() {
-        
-        let alert = UIAlertController(title: "Congratulations!🎉", message: "Your form is published successfully!", preferredStyle: .alert)
-
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [self] (_) in
-
-            self.navigationController?.popViewController(animated: true)
-
-        }))
-        self.present(alert, animated: true, completion: nil)
         
     }
     

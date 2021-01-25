@@ -17,13 +17,15 @@ class DeveloperController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return 2
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .value1, reuseIdentifier: "cellId")
         if indexPath.row == 0 {
             cell.textLabel?.text = "Setup Menu"
+        } else if indexPath.row == 1 {
+            cell.textLabel?.text = "Forms"
         }
         cell.accessoryType = .disclosureIndicator
         return cell
@@ -36,6 +38,9 @@ class DeveloperController: UITableViewController {
         if indexPath.row == 0 {
             let setupMenuController = SetupMenuController(style: .insetGrouped)
             navigationController?.pushViewController(setupMenuController, animated: true)
+        } else if indexPath.row == 1 {
+            let devFormListController = DevFormListController(style: .insetGrouped)
+            navigationController?.pushViewController(devFormListController, animated: true)
         }
         
     }

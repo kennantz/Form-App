@@ -25,12 +25,11 @@
 		BFA06CEE259F0686001D2924 /* SIgnInController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA06CED259F0686001D2924 /* SIgnInController.swift */; };
 		BFA06CF1259F068E001D2924 /* SignUpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA06CF0259F068E001D2924 /* SignUpController.swift */; };
 		BFA06CF4259F06EF001D2924 /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA06CF3259F06EF001D2924 /* CustomTabBarController.swift */; };
-		BFA06CF8259F0779001D2924 /* FindFormController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA06CF7259F0779001D2924 /* FindFormController.swift */; };
 		BFA06CFB259F0783001D2924 /* AccountController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA06CFA259F0783001D2924 /* AccountController.swift */; };
 		BFB0ECAC25A4954B00A6F2CD /* SetupMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB0ECAB25A4954B00A6F2CD /* SetupMenuController.swift */; };
-		BFB0ECAF25A8205A00A6F2CD /* ResponseListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB0ECAE25A8205A00A6F2CD /* ResponseListController.swift */; };
+		BFB0ECAF25A8205A00A6F2CD /* ResponseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB0ECAE25A8205A00A6F2CD /* ResponseController.swift */; };
 		BFBC8D6325A06B42001C6745 /* FillFormController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBC8D6225A06B42001C6745 /* FillFormController.swift */; };
-		BFF980D125A82DCB0052A34F /* ResponseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF980D025A82DCB0052A34F /* ResponseController.swift */; };
+		BFCB276525BD63B300BB4782 /* DevFormListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB276425BD63B300BB4782 /* DevFormListController.swift */; };
 		D8D49C926C7DCDE08887037D /* Pods_GForm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF523CEE837E0A12B13EC56A /* Pods_GForm.framework */; };
 /* End PBXBuildFile section */
 
@@ -57,12 +56,11 @@
 		BFA06CED259F0686001D2924 /* SIgnInController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SIgnInController.swift; sourceTree = "<group>"; };
 		BFA06CF0259F068E001D2924 /* SignUpController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpController.swift; sourceTree = "<group>"; };
 		BFA06CF3259F06EF001D2924 /* CustomTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
-		BFA06CF7259F0779001D2924 /* FindFormController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindFormController.swift; sourceTree = "<group>"; };
 		BFA06CFA259F0783001D2924 /* AccountController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountController.swift; sourceTree = "<group>"; };
 		BFB0ECAB25A4954B00A6F2CD /* SetupMenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupMenuController.swift; sourceTree = "<group>"; };
-		BFB0ECAE25A8205A00A6F2CD /* ResponseListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseListController.swift; sourceTree = "<group>"; };
+		BFB0ECAE25A8205A00A6F2CD /* ResponseController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseController.swift; sourceTree = "<group>"; };
 		BFBC8D6225A06B42001C6745 /* FillFormController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FillFormController.swift; sourceTree = "<group>"; };
-		BFF980D025A82DCB0052A34F /* ResponseController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseController.swift; sourceTree = "<group>"; };
+		BFCB276425BD63B300BB4782 /* DevFormListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevFormListController.swift; sourceTree = "<group>"; };
 		EFBBD5BF27AF4277CE27FDB7 /* Pods-GForm.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GForm.release.xcconfig"; path = "Target Support Files/Pods-GForm/Pods-GForm.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -92,6 +90,7 @@
 				BFA06CFA259F0783001D2924 /* AccountController.swift */,
 				BF18A75325A4840F005A028D /* DeveloperController.swift */,
 				BFB0ECAB25A4954B00A6F2CD /* SetupMenuController.swift */,
+				BFCB276425BD63B300BB4782 /* DevFormListController.swift */,
 			);
 			path = Account;
 			sourceTree = "<group>";
@@ -155,19 +154,10 @@
 				BF94ED86259F481D000E3F3B /* FormController.swift */,
 				BF94ED89259F49F7000E3F3B /* CreateElementController.swift */,
 				BF94ED8D25A04443000E3F3B /* EditElementController.swift */,
-				BFB0ECAE25A8205A00A6F2CD /* ResponseListController.swift */,
-				BFF980D025A82DCB0052A34F /* ResponseController.swift */,
-			);
-			path = Forms;
-			sourceTree = "<group>";
-		};
-		BF94ED9025A061D2000E3F3B /* Find */ = {
-			isa = PBXGroup;
-			children = (
-				BFA06CF7259F0779001D2924 /* FindFormController.swift */,
+				BFB0ECAE25A8205A00A6F2CD /* ResponseController.swift */,
 				BFBC8D6225A06B42001C6745 /* FillFormController.swift */,
 			);
-			path = Find;
+			path = Forms;
 			sourceTree = "<group>";
 		};
 		BFA06CE1259F0604001D2924 /* Helper */ = {
@@ -184,7 +174,6 @@
 			children = (
 				BFA06CE7259F0624001D2924 /* Login & Regis */,
 				BF94ED84259F259C000E3F3B /* Forms */,
-				BF94ED9025A061D2000E3F3B /* Find */,
 				BF18A75225A483F3005A028D /* Account */,
 			);
 			path = Controller;
@@ -326,9 +315,9 @@
 			files = (
 				BFA06CDF259F05DF001D2924 /* LandingPageController.swift in Sources */,
 				BF8A65DE259F02E100481410 /* FormListController.swift in Sources */,
-				BFF980D125A82DCB0052A34F /* ResponseController.swift in Sources */,
-				BFB0ECAF25A8205A00A6F2CD /* ResponseListController.swift in Sources */,
+				BFB0ECAF25A8205A00A6F2CD /* ResponseController.swift in Sources */,
 				BFBC8D6325A06B42001C6745 /* FillFormController.swift in Sources */,
+				BFCB276525BD63B300BB4782 /* DevFormListController.swift in Sources */,
 				BF8A65DA259F02E100481410 /* AppDelegate.swift in Sources */,
 				BF94ED81259F19F5000E3F3B /* Model.swift in Sources */,
 				BF94ED8A259F49F7000E3F3B /* CreateElementController.swift in Sources */,
@@ -336,7 +325,6 @@
 				BF18A75425A4840F005A028D /* DeveloperController.swift in Sources */,
 				BFA06CF1259F068E001D2924 /* SignUpController.swift in Sources */,
 				BF94ED8E25A04444000E3F3B /* EditElementController.swift in Sources */,
-				BFA06CF8259F0779001D2924 /* FindFormController.swift in Sources */,
 				BFA06CEA259F0644001D2924 /* Extension.swift in Sources */,
 				BF94ED87259F481D000E3F3B /* FormController.swift in Sources */,
 				BFA06CE3259F060E001D2924 /* AutoLayout.swift in Sources */,
