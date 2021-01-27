@@ -81,20 +81,70 @@ class FormListController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        if menuSegmentedController.selectedSegmentIndex == 0 {
+        if privateForms.count != 0 || developerForms.count != 0 {
             
-            let cell = UITableViewCell(style: .value1, reuseIdentifier: "cellId")
+            if menuSegmentedController.selectedSegmentIndex == 0 {
+                
+                let cell = UITableViewCell(style: .value1, reuseIdentifier: "cellId")
+                
+                let view = UIView()
+                
+                let titleLabel = UILabel()
+                titleLabel.text = privateForms[indexPath.row].title
+                titleLabel.textColor = UIColor.label
+                titleLabel.font = UIFont.systemFont(ofSize: eighteen, weight: .bold)
+                
+                let dateCreationLabel = UILabel()
+                
+                let date = Date(timeIntervalSince1970: privateForms[indexPath.row].creationTimestamp!.doubleValue)
+                let dateFormatter = DateFormatter()
+                dateFormatter.timeZone = TimeZone(abbreviation: "GMT") //Set timezone that you want
+                dateFormatter.locale = NSLocale.current
+                dateFormatter.dateFormat = "dd MMM yyyy" //Specify your format that you want
+                let strDate = dateFormatter.string(from: date)
+                
+                dateCreationLabel.text = strDate
+                dateCreationLabel.textColor = UIColor.label
+                dateCreationLabel.font = UIFont.systemFont(ofSize: fourteen, weight: .regular)
+                
+                let nORLabel = UILabel()
+                nORLabel.text = "\(privateForms[indexPath.row].numberOfResponse ?? 0) Responses"
+                nORLabel.textColor = UIColor.label
+                nORLabel.font = UIFont.systemFont(ofSize: fourteen, weight: .medium)
+                
+                cell.addSubview(view)
+                view.addSubview(titleLabel)
+                view.addSubview(dateCreationLabel)
+                view.addSubview(nORLabel)
+                
+                nORLabel.anchor(dateCreationLabel.topAnchor, left: nil, bottom: dateCreationLabel.bottomAnchor, right: view.rightAnchor, topConstant: 0, leftConstant: 0, bottomConstant: 0, rightConstant: twentyFour, widthConstant: 0, heightConstant: 0)
+                
+                dateCreationLabel.anchor(titleLabel.bottomAnchor, left: titleLabel.leftAnchor, bottom: nil, right: nil, topConstant: four, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: 0, heightConstant: 0)
+                
+                titleLabel.anchor(view.topAnchor, left: view.leftAnchor, bottom: nil, right: nil, topConstant: ten, leftConstant: twentyFour, bottomConstant: 0, rightConstant: 0, widthConstant: twoHundred, heightConstant: 0)
+                
+                view.fillSuperview()
+                
+                return cell
+                
+            }
+            
+        }
+        
+        let cell = UITableViewCell(style: .value1, reuseIdentifier: "cellId1")
+        
+        if privateForms.count != 0 || developerForms.count != 0 {
             
             let view = UIView()
             
             let titleLabel = UILabel()
-            titleLabel.text = privateForms[indexPath.row].title
+            titleLabel.text = developerForms[indexPath.row].title
             titleLabel.textColor = UIColor.label
             titleLabel.font = UIFont.systemFont(ofSize: eighteen, weight: .bold)
             
             let dateCreationLabel = UILabel()
             
-            let date = Date(timeIntervalSince1970: privateForms[indexPath.row].creationTimestamp!.doubleValue)
+            let date = Date(timeIntervalSince1970: developerForms[indexPath.row].creationTimestamp!.doubleValue)
             let dateFormatter = DateFormatter()
             dateFormatter.timeZone = TimeZone(abbreviation: "GMT") //Set timezone that you want
             dateFormatter.locale = NSLocale.current
@@ -105,17 +155,9 @@ class FormListController: UITableViewController {
             dateCreationLabel.textColor = UIColor.label
             dateCreationLabel.font = UIFont.systemFont(ofSize: fourteen, weight: .regular)
             
-            let nORLabel = UILabel()
-            nORLabel.text = "\(privateForms[indexPath.row].numberOfResponse ?? 0) Responses"
-            nORLabel.textColor = UIColor.label
-            nORLabel.font = UIFont.systemFont(ofSize: fourteen, weight: .medium)
-            
             cell.addSubview(view)
             view.addSubview(titleLabel)
             view.addSubview(dateCreationLabel)
-            view.addSubview(nORLabel)
-            
-            nORLabel.anchor(dateCreationLabel.topAnchor, left: nil, bottom: dateCreationLabel.bottomAnchor, right: view.rightAnchor, topConstant: 0, leftConstant: 0, bottomConstant: 0, rightConstant: twentyFour, widthConstant: 0, heightConstant: 0)
             
             dateCreationLabel.anchor(titleLabel.bottomAnchor, left: titleLabel.leftAnchor, bottom: nil, right: nil, topConstant: four, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: 0, heightConstant: 0)
             
@@ -123,278 +165,231 @@ class FormListController: UITableViewController {
             
             view.fillSuperview()
             
-            return cell
-            
         }
-        
-        let cell = UITableViewCell(style: .value1, reuseIdentifier: "cellId1")
-        
-        let view = UIView()
-        
-        let titleLabel = UILabel()
-        titleLabel.text = developerForms[indexPath.row].title
-        titleLabel.textColor = UIColor.label
-        titleLabel.font = UIFont.systemFont(ofSize: eighteen, weight: .bold)
-        
-        let dateCreationLabel = UILabel()
-        
-        let date = Date(timeIntervalSince1970: developerForms[indexPath.row].creationTimestamp!.doubleValue)
-        let dateFormatter = DateFormatter()
-        dateFormatter.timeZone = TimeZone(abbreviation: "GMT") //Set timezone that you want
-        dateFormatter.locale = NSLocale.current
-        dateFormatter.dateFormat = "dd MMM yyyy" //Specify your format that you want
-        let strDate = dateFormatter.string(from: date)
-        
-        dateCreationLabel.text = strDate
-        dateCreationLabel.textColor = UIColor.label
-        dateCreationLabel.font = UIFont.systemFont(ofSize: fourteen, weight: .regular)
-        
-        cell.addSubview(view)
-        view.addSubview(titleLabel)
-        view.addSubview(dateCreationLabel)
-        
-        dateCreationLabel.anchor(titleLabel.bottomAnchor, left: titleLabel.leftAnchor, bottom: nil, right: nil, topConstant: four, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: 0, heightConstant: 0)
-        
-        titleLabel.anchor(view.topAnchor, left: view.leftAnchor, bottom: nil, right: nil, topConstant: ten, leftConstant: twentyFour, bottomConstant: 0, rightConstant: 0, widthConstant: twoHundred, heightConstant: 0)
-        
-        view.fillSuperview()
         
         return cell
         
     }
     
+    private let responseListController = ResponseController(style: .insetGrouped)
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let responseListController = ResponseController(style: .insetGrouped)
-        
         if menuSegmentedController.selectedSegmentIndex == 0 {
+            responseListController.userType = "Private"
             responseListController.formID = privateForms[indexPath.row].id
             responseListController.numberOfResponse = privateForms[indexPath.row].numberOfResponse
-            navigationController?.pushViewController(responseListController, animated: true)
         } else {
-            handleFillForm(indexPath: indexPath)
+            responseListController.userType = "Developer"
+            responseListController.formID = developerForms[indexPath.row].id
+            responseListController.numberOfResponse = developerForms[indexPath.row].numberOfResponse
         }
+        
+        navigationController?.pushViewController(responseListController, animated: true)
         
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        
+            
         if editingStyle == .delete {
             
             if menuSegmentedController.selectedSegmentIndex == 0 {
                 
                 let popUp = UIAlertController(title: "Confirmation", message: "Are you sure want to delete this form?", preferredStyle: .alert)
-                popUp.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { [self] (action) in
-                    
+                popUp.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { (action) in
+                        
                     tableView.isUserInteractionEnabled = false
-
+                        
                     var barButton = UIBarButtonItem(customView: self.activityIndicator)
                     self.navigationItem.rightBarButtonItem = barButton
 
                     self.activityIndicator.startAnimating()
-
+                        
                     guard let currentUID = Auth.auth().currentUser?.uid else {
                         return
                     }
-                    
-                    var formID = ""
-
-                    if self.menuSegmentedController.selectedSegmentIndex == 0 {
-                        formID = privateForms[indexPath.row].id!
-                    } else {
-                        formID = developerForms[indexPath.row].id!
-                    }
-                    
+                        
+                    let formID = privateForms[indexPath.row].id!
+                        
                     // CHECK NUMBER OF ELEMENT
                     Database.database().reference().child("Forms").child(formID).child("Other").observeSingleEvent(of: .value) { (snapshot) in
-
+                            
                         guard let dictionary = snapshot.value as? [String: AnyObject] else {
                             return
                         }
-
+                            
                         let numberOfElement = dictionary["Element Count"] as? Int
                         let numberOfResponse = dictionary["Number of Response"] as? Int
-
+                            
                         if numberOfElement! > 0 {
-
-                            if (numberOfResponse! > 0) {
                                 
-                                Database.database().reference().child("Forms").child(formID).child("Elements").observe(.childAdded) { (snapshot) in
-
-                                    let elementID = snapshot.key
-                                    Database.database().reference().child("Elements").child(elementID).child("Responses").observe(.childAdded) { (snapshot) in
-                                        
-                                        let responseID = snapshot.key
-                                        Database.database().reference().child("Responses").child(responseID).removeValue { (error, ref) in
-                                            
-                                            print("removed")
-                                            
-                                        }
-                                        
-                                    }
+                            Database.database().reference().child("Forms").child(formID).child("Elements").observe(.childAdded) { (snapshot) in
                                     
-                                    Database.database().reference().child("Elements").child(elementID).removeValue { (error, ref) in
-
-
-
-                                    }
-
+                                let elementID = snapshot.key
+                                Database.database().reference().child("Elements").child(elementID).removeValue { (error, ref) in
+                                        
+                                        
+                                        
                                 }
-
+                                    
+                            }
+                                
+                            if (numberOfResponse! > 0) {
+                                    
+                                Database.database().reference().child("Forms").child(formID).child("Responses").observe(.childAdded) {(snapshot) in
+                                        
+                                    let responseID = snapshot.key
+                                    Database.database().reference().child("Responses").child(responseID).removeValue { (error, ref) in
+                                            
+                                            
+                                            
+                                    }
+                                        
+                                }
+                                    
                             } else {
-                                
-                                Database.database().reference().child("Forms").child(formID).child("Elements").observe(.childAdded) { (snapshot) in
-
-                                    let elementID = snapshot.key
-                                    Database.database().reference().child("Elements").child(elementID).removeValue { (error, ref) in
-
-
-
-                                    }
-
-                                }
-                                
+                                    
                             }
-
+                                
                             Database.database().reference().child("Users").child(currentUID).child("Forms").child(formID).removeValue { (error, ref) in
-
+                                    
                                 if error != nil {
                                     print(error!)
                                     return
                                 }
-
+                                    
                                 Database.database().reference().child("Forms").child(formID).removeValue { (error, ref) in
-
+                                        
                                     if error != nil {
                                         print(error!)
                                         return
                                     }
-
+                                        
                                     Database.database().reference().child("Users").child(currentUID).child("Other").observeSingleEvent(of: .value) { (snapshot) in
-
+                                            
                                         guard let dictionary = snapshot.value as? [String: AnyObject] else {
                                             return
                                         }
-
+                                            
                                         let numberOfForms = dictionary["Number of Forms"] as? Int
-
+                                            
                                         let numberOfFormsAfter = numberOfForms! - 1
                                         let numberOfFormsAfterValue = ["Number of Forms": numberOfFormsAfter]
-
+                                            
                                         Database.database().reference().child("Users").child(currentUID).child("Other").updateChildValues(numberOfFormsAfterValue) { (error, ref) in
-
-                                            if error != nil {
-                                                print(error!)
-                                                return
-                                            }
-
-                                            DispatchQueue.main.async {
-
-                                                tableView.isUserInteractionEnabled = true
-
-                                                self.activityIndicator.stopAnimating()
-                                                barButton = UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(self.addNewForm))
-                                                self.navigationItem.rightBarButtonItem = barButton
-
-                                                if self.menuSegmentedController.selectedSegmentIndex == 0 {
-                                                    privateForms.remove(at: indexPath.row)
-                                                    tableView.deleteRows(at: [indexPath], with: .fade)
-                                                    if privateForms.count == 0 {
-                                                        self.observeUserNumberOfForms()
-                                                    }
-                                                } else {
-                                                    developerForms.remove(at: indexPath.row)
-                                                    tableView.deleteRows(at: [indexPath], with: .fade)
-                                                    if developerForms.count == 0 {
-                                                        self.observeUserNumberOfForms()
-                                                    }
-                                                }
-
-                                            }
-
-                                        }
-
-                                    }
-
-                                }
-
-                            }
-
-                        } else {
-
-                            Database.database().reference().child("Users").child(currentUID).child("Forms").child(formID).removeValue { (error, ref) in
-
-                                if error != nil {
-                                    print(error!)
-                                    return
-                                }
-
-                                Database.database().reference().child("Forms").child(formID).removeValue { (error, ref) in
-
-                                    if error != nil {
-                                        print(error!)
-                                        return
-                                    }
-
-                                    Database.database().reference().child("Users").child(currentUID).child("Other").observeSingleEvent(of: .value) { (snapshot) in
-
-                                        guard let dictionary = snapshot.value as? [String: AnyObject] else {
-                                            return
-                                        }
-
-                                        let numberOfForms = dictionary["Number of Forms"] as? Int
-
-                                        let numberOfFormsAfter = numberOfForms! - 1
-                                        let numberOfFormsAfterValue = ["Number of Forms": numberOfFormsAfter]
-
-                                        Database.database().reference().child("Users").child(currentUID).child("Other").updateChildValues(numberOfFormsAfterValue) { (error, ref) in
-
-                                            if error != nil {
-                                                print(error!)
-                                                return
-                                            }
-
-                                            DispatchQueue.main.async {
-
-                                                tableView.isUserInteractionEnabled = true
-
-                                                self.activityIndicator.stopAnimating()
-                                                barButton = UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(self.addNewForm))
-                                                self.navigationItem.rightBarButtonItem = barButton
-
-                                                if self.menuSegmentedController.selectedSegmentIndex == 0 {
-                                                    privateForms.remove(at: indexPath.row)
-                                                    tableView.deleteRows(at: [indexPath], with: .fade)
-                                                    if privateForms.count == 0 {
-                                                        self.observeUserNumberOfForms()
-                                                    }
-                                                } else {
-                                                    developerForms.remove(at: indexPath.row)
-                                                    tableView.deleteRows(at: [indexPath], with: .fade)
-                                                    if developerForms.count == 0 {
-                                                        self.observeUserNumberOfForms()
-                                                    }
-                                                }
                                                 
+                                            if error != nil {
+                                                print(error!)
+                                                return
                                             }
+                                                
+                                            DispatchQueue.main.async {
 
+                                                tableView.isUserInteractionEnabled = true
+
+                                                self.activityIndicator.stopAnimating()
+                                                barButton = UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(self.addNewForm))
+                                                self.navigationItem.rightBarButtonItem = barButton
+
+                                                if self.menuSegmentedController.selectedSegmentIndex == 0 {
+                                                    privateForms.remove(at: indexPath.row)
+                                                    tableView.deleteRows(at: [indexPath], with: .fade)
+                                                    if privateForms.count == 0 {
+                                                        self.observeUserNumberOfForms()
+                                                    }
+                                                } else {
+                                                    developerForms.remove(at: indexPath.row)
+                                                    tableView.deleteRows(at: [indexPath], with: .fade)
+                                                    if developerForms.count == 0 {
+                                                        self.observeUserNumberOfForms()
+                                                    }
+                                                }
+
+                                            }
+                                                
                                         }
-
+                                            
                                     }
-
+                                        
                                 }
-
+                                    
                             }
+                                
+                        } else {
+                                
+                            Database.database().reference().child("Users").child(currentUID).child("Forms").child(formID).removeValue { (error, ref) in
+                                    
+                                if error != nil {
+                                    print(error!)
+                                    return
+                                }
+                                    
+                                Database.database().reference().child("Forms").child(formID).removeValue { (error, ref) in
+                                        
+                                    if error != nil {
+                                        print(error!)
+                                        return
+                                    }
+                                        
+                                    Database.database().reference().child("Users").child(currentUID).child("Other").observeSingleEvent(of: .value) { (snapshot) in
+                                            
+                                        guard let dictionary = snapshot.value as? [String: AnyObject] else {
+                                            return
+                                        }
+                                            
+                                        let numberOfForms = dictionary["Number of Forms"] as? Int
+                                            
+                                        let numberOfFormsAfter = numberOfForms! - 1
+                                        let numberOfFormsAfterValue = ["Number of Forms": numberOfFormsAfter]
+                                            
+                                        Database.database().reference().child("Users").child(currentUID).child("Other").updateChildValues(numberOfFormsAfterValue) { (error, ref) in
+                                                
+                                            if error != nil {
+                                                print(error!)
+                                                return
+                                            }
+                                                
+                                            DispatchQueue.main.async {
 
+                                                tableView.isUserInteractionEnabled = true
+
+                                                self.activityIndicator.stopAnimating()
+                                                barButton = UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(self.addNewForm))
+                                                self.navigationItem.rightBarButtonItem = barButton
+
+                                                if self.menuSegmentedController.selectedSegmentIndex == 0 {
+                                                    privateForms.remove(at: indexPath.row)
+                                                    tableView.deleteRows(at: [indexPath], with: .fade)
+                                                    if privateForms.count == 0 {
+                                                        self.observeUserNumberOfForms()
+                                                    }
+                                                } else {
+                                                    developerForms.remove(at: indexPath.row)
+                                                    tableView.deleteRows(at: [indexPath], with: .fade)
+                                                    if developerForms.count == 0 {
+                                                        self.observeUserNumberOfForms()
+                                                    }
+                                                }
+
+                                            }
+                                                
+                                        }
+                                            
+                                    }
+                                        
+                                }
+                                    
+                            }
+                                
                         }
-
+                            
                     }
-                    
+                        
                 }))
                 popUp.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
-                    
+                        
                 }))
                 self.present(popUp, animated: true) {}
                 
@@ -402,15 +397,15 @@ class FormListController: UITableViewController {
                 
                 let popUp = UIAlertController(title: "We're sorry for the inconvenience", message: "You can't edit or delete developer forms", preferredStyle: .alert)
                 popUp.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
-                    
+                                    
                 }))
-                
+                                
                 self.present(popUp, animated: true) {}
                 
             }
-            
+                
         }
-        
+            
     }
     
     override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
@@ -437,7 +432,14 @@ class FormListController: UITableViewController {
             
         }
         
-        return nil
+        let fillAction = UIContextualAction(style: .normal, title: "Fill") { [weak self] (fillAction, view, completionHandler) in
+            self?.handleFillForm(indexPath: indexPath)
+            completionHandler(true)
+        }
+        fillAction.backgroundColor = .systemBlue
+        fillAction.image = UIImage(named: "fillIcon")
+        
+        return UISwipeActionsConfiguration(actions: [fillAction])
         
     }
     

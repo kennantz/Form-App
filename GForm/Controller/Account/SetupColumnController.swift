@@ -8,7 +8,7 @@
 import LBTAComponents
 import Firebase
 
-class SetupMenuController: UITableViewController {
+class SetupColumnController: UITableViewController {
     
     let activityIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
     
@@ -130,11 +130,11 @@ class SetupMenuController: UITableViewController {
     
 }
 
-extension SetupMenuController {
+extension SetupColumnController {
     
     private func setupNavbar() {
         
-        navigationItem.title = "Setup Menu"
+        navigationItem.title = "Setup Column"
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.setRightBarButton(UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(addNewMenu)), animated: true)
         

@@ -83,14 +83,21 @@ var userResponseLists = [UserResponseList]()
 
 class UserResponseList: NSObject {
     var id: String?
-    var name: String?
-    var email: String?
 }
 
 var userResponses = [UserResponse]()
 
 class UserResponse: NSObject {
+    var responseID: String?
+    var responses: [Response]?
+}
+
+class Response: NSObject {
+    var elementID: String?
     var title: String?
+    var dataType: String?
+    var seqNo: String?
+    var color: String?
     var response: String?
 }
 

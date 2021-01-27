@@ -62,7 +62,11 @@ class CreateElementController: UITableViewController, UIColorPickerViewControlle
             if elementMenus[indexPath.row].element == "Color" {
                 
                 if elementMenus[indexPath.row].selectedOption != "Not Selected" {
-                    cell.detailTextLabel?.textColor = hexStringToUIColor(hex: elementMenus[indexPath.row].selectedOption!)
+                    if elementMenus[indexPath.row].selectedOption == "#FFFFFF" {
+                        
+                    } else {
+                        cell.detailTextLabel?.textColor = hexStringToUIColor(hex: elementMenus[indexPath.row].selectedOption!)
+                    }
                 }
                 
             }
@@ -259,7 +263,14 @@ extension CreateElementController {
                 
                 let menu = ElementMenu()
                 menu.element = menuName
-                menu.selectedOption = "Not Selected"
+                
+                
+                if menuName == "Color" {
+                    menu.selectedOption = "#FFFFFF"
+                } else {
+                    menu.selectedOption = "Not Selected"
+                }
+                
                 elementMenus.append(menu)
                 
                 DispatchQueue.main.async {

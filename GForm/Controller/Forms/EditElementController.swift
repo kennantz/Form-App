@@ -74,11 +74,24 @@ class EditElementController: UITableViewController, UIColorPickerViewControllerD
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = UITableViewCell(style: .value1, reuseIdentifier: "cellId")
-        cell.textLabel?.text = elementMenus[indexPath.row].element
-        cell.detailTextLabel?.text = elementMenus[indexPath.row].selectedOption
         
-        if indexPath.row == 3 {
-            cell.detailTextLabel?.textColor = hexStringToUIColor(hex: elementMenus[indexPath.row].selectedOption!)
+        if elementMenus.count != 0 {
+            
+            cell.textLabel?.text = elementMenus[indexPath.row].element
+            cell.detailTextLabel?.text = elementMenus[indexPath.row].selectedOption
+            
+            if elementMenus[indexPath.row].element == "Color" {
+                
+                if elementMenus[indexPath.row].selectedOption != "Not Selected" {
+                    if elementMenus[indexPath.row].selectedOption == "#FFFFFF" {
+                        
+                    } else {
+                        cell.detailTextLabel?.textColor = hexStringToUIColor(hex: elementMenus[indexPath.row].selectedOption!)
+                    }
+                }
+                
+            }
+            
         }
         
         cell.accessoryType = .disclosureIndicator

@@ -83,12 +83,14 @@ class DevFormListController: UITableViewController {
         
     }
     
+    private let responseListController = ResponseController(style: .insetGrouped)
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let responseListController = ResponseController(style: .insetGrouped)
         responseListController.formID = developerForms[indexPath.row].id
+        responseListController.userType = "Private"
         responseListController.numberOfResponse = developerForms[indexPath.row].numberOfResponse
         
         navigationController?.pushViewController(responseListController, animated: true)
@@ -96,200 +98,187 @@ class DevFormListController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        
-        if editingStyle == .delete {
             
-            let popUp = UIAlertController(title: "Confirmation", message: "Are you sure want to delete this form?", preferredStyle: .alert)
-            popUp.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { [self] (action) in
+        if editingStyle == .delete {
                 
+            let popUp = UIAlertController(title: "Confirmation", message: "Are you sure want to delete this form?", preferredStyle: .alert)
+            popUp.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { (action) in
+                    
                 tableView.isUserInteractionEnabled = false
-
+                    
                 var barButton = UIBarButtonItem(customView: self.activityIndicator)
                 self.navigationItem.rightBarButtonItem = barButton
 
                 self.activityIndicator.startAnimating()
-
-                var formID = ""
-
-                formID = developerForms[indexPath.row].id!
-                
+                    
+                let formID = developerForms[indexPath.row].id!
+                    
                 // CHECK NUMBER OF ELEMENT
                 Database.database().reference().child("Forms").child(formID).child("Other").observeSingleEvent(of: .value) { (snapshot) in
-
+                        
                     guard let dictionary = snapshot.value as? [String: AnyObject] else {
                         return
                     }
-
+                        
                     let numberOfElement = dictionary["Element Count"] as? Int
                     let numberOfResponse = dictionary["Number of Response"] as? Int
-
+                        
                     if numberOfElement! > 0 {
-
-                        if (numberOfResponse! > 0) {
                             
-                            Database.database().reference().child("Forms").child(formID).child("Elements").observe(.childAdded) { (snapshot) in
-
-                                let elementID = snapshot.key
-                                Database.database().reference().child("Elements").child(elementID).child("Responses").observe(.childAdded) { (snapshot) in
-                                    
-                                    let responseID = snapshot.key
-                                    Database.database().reference().child("Responses").child(responseID).removeValue { (error, ref) in
-                                        
-                                        print("removed")
-                                        
-                                    }
-                                    
-                                }
+                        Database.database().reference().child("Forms").child(formID).child("Elements").observe(.childAdded) { (snapshot) in
                                 
-                                Database.database().reference().child("Elements").child(elementID).removeValue { (error, ref) in
-
-
-
-                                }
-
+                            let elementID = snapshot.key
+                            Database.database().reference().child("Elements").child(elementID).removeValue { (error, ref) in
+                                    
+                                    
+                                    
                             }
-
+                                
+                        }
+                            
+                        if (numberOfResponse! > 0) {
+                                
+                            Database.database().reference().child("Forms").child(formID).child("Responses").observe(.childAdded) {(snapshot) in
+                                    
+                                let responseID = snapshot.key
+                                Database.database().reference().child("Responses").child(responseID).removeValue { (error, ref) in
+                                        
+                                        
+                                        
+                                }
+                                    
+                            }
+                                
                         } else {
-                            
-                            Database.database().reference().child("Forms").child(formID).child("Elements").observe(.childAdded) { (snapshot) in
-
-                                let elementID = snapshot.key
-                                Database.database().reference().child("Elements").child(elementID).removeValue { (error, ref) in
-
-
-
-                                }
-
-                            }
-                            
+                                
                         }
-
+                            
                         Database.database().reference().child("Developer").child("Forms").child(formID).removeValue { (error, ref) in
-
+                                
                             if error != nil {
                                 print(error!)
                                 return
                             }
-
+                                
                             Database.database().reference().child("Forms").child(formID).removeValue { (error, ref) in
-
+                                    
                                 if error != nil {
                                     print(error!)
                                     return
                                 }
-
+                                    
                                 Database.database().reference().child("Developer").child("Other").observeSingleEvent(of: .value) { (snapshot) in
-
+                                        
                                     guard let dictionary = snapshot.value as? [String: AnyObject] else {
                                         return
                                     }
-
+                                        
                                     let numberOfForms = dictionary["Number of Forms"] as? Int
-
+                                        
                                     let numberOfFormsAfter = numberOfForms! - 1
                                     let numberOfFormsAfterValue = ["Number of Forms": numberOfFormsAfter]
-
+                                        
                                     Database.database().reference().child("Developer").child("Other").updateChildValues(numberOfFormsAfterValue) { (error, ref) in
-
-                                        if error != nil {
-                                            print(error!)
-                                            return
-                                        }
-
-                                        DispatchQueue.main.async {
-
-                                            tableView.isUserInteractionEnabled = true
-
-                                            self.activityIndicator.stopAnimating()
-                                            barButton = UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(self.addNewForm))
-                                            self.navigationItem.rightBarButtonItem = barButton
-
-                                            developerForms.remove(at: indexPath.row)
-                                            tableView.deleteRows(at: [indexPath], with: .fade)
-                                            if developerForms.count == 0 {
-                                                self.observeNumberOfForms()
-                                            }
-
-                                        }
-
-                                    }
-
-                                }
-
-                            }
-
-                        }
-
-                    } else {
-
-                        Database.database().reference().child("Developer").child("Forms").child(formID).removeValue { (error, ref) in
-
-                            if error != nil {
-                                print(error!)
-                                return
-                            }
-
-                            Database.database().reference().child("Forms").child(formID).removeValue { (error, ref) in
-
-                                if error != nil {
-                                    print(error!)
-                                    return
-                                }
-
-                                Database.database().reference().child("Developer").child("Other").observeSingleEvent(of: .value) { (snapshot) in
-
-                                    guard let dictionary = snapshot.value as? [String: AnyObject] else {
-                                        return
-                                    }
-
-                                    let numberOfForms = dictionary["Number of Forms"] as? Int
-
-                                    let numberOfFormsAfter = numberOfForms! - 1
-                                    let numberOfFormsAfterValue = ["Number of Forms": numberOfFormsAfter]
-
-                                    Database.database().reference().child("Developer").child("Other").updateChildValues(numberOfFormsAfterValue) { (error, ref) in
-
-                                        if error != nil {
-                                            print(error!)
-                                            return
-                                        }
-
-                                        DispatchQueue.main.async {
-
-                                            tableView.isUserInteractionEnabled = true
-
-                                            self.activityIndicator.stopAnimating()
-                                            barButton = UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(self.addNewForm))
-                                            self.navigationItem.rightBarButtonItem = barButton
-
-                                            developerForms.remove(at: indexPath.row)
-                                            tableView.deleteRows(at: [indexPath], with: .fade)
-                                            if developerForms.count == 0 {
-                                                self.observeNumberOfForms()
-                                            }
                                             
+                                        if error != nil {
+                                            print(error!)
+                                            return
                                         }
+                                            
+                                        DispatchQueue.main.async {
 
+                                            tableView.isUserInteractionEnabled = true
+
+                                            self.activityIndicator.stopAnimating()
+                                            barButton = UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(self.addNewForm))
+                                            self.navigationItem.rightBarButtonItem = barButton
+
+                                            developerForms.remove(at: indexPath.row)
+                                            tableView.deleteRows(at: [indexPath], with: .fade)
+                                            if developerForms.count == 0 {
+                                                self.observeNumberOfForms()
+                                            }
+
+                                        }
+                                            
                                     }
-
+                                        
                                 }
-
+                                    
                             }
-
+                                
                         }
+                            
+                    } else {
+                            
+                        Database.database().reference().child("Developer").child("Forms").child(formID).removeValue { (error, ref) in
+                                
+                            if error != nil {
+                                print(error!)
+                                return
+                            }
+                                
+                            Database.database().reference().child("Forms").child(formID).removeValue { (error, ref) in
+                                    
+                                if error != nil {
+                                    print(error!)
+                                    return
+                                }
+                                    
+                                Database.database().reference().child("Developer").child("Other").observeSingleEvent(of: .value) { (snapshot) in
+                                        
+                                    guard let dictionary = snapshot.value as? [String: AnyObject] else {
+                                        return
+                                    }
+                                        
+                                    let numberOfForms = dictionary["Number of Forms"] as? Int
+                                        
+                                    let numberOfFormsAfter = numberOfForms! - 1
+                                    let numberOfFormsAfterValue = ["Number of Forms": numberOfFormsAfter]
+                                        
+                                    Database.database().reference().child("Developer").child("Other").updateChildValues(numberOfFormsAfterValue) { (error, ref) in
+                                            
+                                        if error != nil {
+                                            print(error!)
+                                            return
+                                        }
+                                            
+                                        DispatchQueue.main.async {
 
+                                            tableView.isUserInteractionEnabled = true
+
+                                            self.activityIndicator.stopAnimating()
+                                            barButton = UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(self.addNewForm))
+                                            self.navigationItem.rightBarButtonItem = barButton
+
+                                            developerForms.remove(at: indexPath.row)
+                                            tableView.deleteRows(at: [indexPath], with: .fade)
+                                            if developerForms.count == 0 {
+                                                self.observeNumberOfForms()
+                                            }
+
+                                        }
+                                            
+                                    }
+                                        
+                                }
+                                    
+                            }
+                                
+                        }
+                            
                     }
-
+                        
                 }
-                
+                    
             }))
             popUp.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
-                
+                    
             }))
             self.present(popUp, animated: true) {}
-            
+                
         }
-        
+            
     }
     
     override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
