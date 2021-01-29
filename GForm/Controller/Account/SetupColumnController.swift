@@ -10,6 +10,12 @@ import Firebase
 
 class SetupColumnController: UITableViewController {
     
+    var navTitle: String? {
+        didSet {
+            navigationItem.title = navTitle
+        }
+    }
+    
     let activityIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
     
     lazy var noElementLabel: UILabel = {
@@ -134,7 +140,6 @@ extension SetupColumnController {
     
     private func setupNavbar() {
         
-        navigationItem.title = "Setup Column"
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.setRightBarButton(UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(addNewMenu)), animated: true)
         
@@ -237,7 +242,7 @@ extension SetupColumnController {
         
         Database.database().reference().child("Developer").child("Menus").removeAllObservers()
         
-        let alert = UIAlertController(title: "Add new menu", message: "", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Add new column", message: "", preferredStyle: .alert)
         alert.addTextField { (textfield) in
             textfield.placeholder = "Menu name"
             textfield.layer.borderWidth = 0

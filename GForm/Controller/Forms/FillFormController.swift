@@ -191,8 +191,6 @@ extension FillFormController {
     
     private func setupNavbar() {
         
-        navigationItem.title = "Fill Form"
-        
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.setRightBarButton(UIBarButtonItem(title: "Submit", style: .plain, target: self, action: #selector(handleCheckSubmitForm)), animated: true)
         

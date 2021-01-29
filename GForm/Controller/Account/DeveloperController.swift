@@ -9,6 +9,8 @@ import LBTAComponents
 
 class DeveloperController: UITableViewController {
     
+    let menus = ["Setup Column", "Forms"]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -17,16 +19,12 @@ class DeveloperController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return menus.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .value1, reuseIdentifier: "cellId")
-        if indexPath.row == 0 {
-            cell.textLabel?.text = "Setup Column"
-        } else if indexPath.row == 1 {
-            cell.textLabel?.text = "Forms"
-        }
+        cell.textLabel?.text = menus[indexPath.row]
         cell.accessoryType = .disclosureIndicator
         return cell
     }
@@ -37,6 +35,7 @@ class DeveloperController: UITableViewController {
         
         if indexPath.row == 0 {
             let setupMenuController = SetupColumnController(style: .insetGrouped)
+            setupMenuController.navTitle = menus[indexPath.row]
             navigationController?.pushViewController(setupMenuController, animated: true)
         } else if indexPath.row == 1 {
             let devFormListController = DevFormListController(style: .insetGrouped)

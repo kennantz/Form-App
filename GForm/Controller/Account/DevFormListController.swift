@@ -90,6 +90,7 @@ class DevFormListController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         
         responseListController.formID = developerForms[indexPath.row].id
+        responseListController.formTitle = developerForms[indexPath.row].title
         responseListController.userType = "Private"
         responseListController.numberOfResponse = developerForms[indexPath.row].numberOfResponse
         
@@ -441,55 +442,59 @@ extension DevFormListController {
             
             if formTitle != "" {
                 
-                let formRef = Database.database().reference().child("Forms")
-                let formKey = formRef.childByAutoId().key
-                let formIDValue = [formKey: 1]
-                
-                let timeStampNow = Double(NSDate().timeIntervalSince1970)
-                
-                let formValue = ["Title": formTitle as Any, "Element Count": 0, "Creation Timestamp": timeStampNow, "Number of Response": 0] as [String : Any]
-                
-                Database.database().reference().child("Developer").child("Other").observeSingleEvent(of: .value) { (snapshot) in
+                if checkFormTitleAvailability(newtitle: formTitle!, type: "Developer") {
                     
-                    guard let dictionary = snapshot.value as? [String: AnyObject] else {
-                        return
-                    }
+                    let formRef = Database.database().reference().child("Forms")
+                    let formKey = formRef.childByAutoId().key
+                    let formIDValue = [formKey: 1]
                     
-                    let numberOfForms = dictionary["Number of Forms"] as? Int
+                    let timeStampNow = Double(NSDate().timeIntervalSince1970)
                     
-                    let numberOfFormsAfter = numberOfForms! + 1
-                    let numberOfFormsAfterValue = ["Number of Forms": numberOfFormsAfter]
+                    let formValue = ["Title": formTitle as Any, "Element Count": 0, "Creation Timestamp": timeStampNow, "Number of Response": 0] as [String : Any]
                     
-                    Database.database().reference().child("Developer").child("Other").updateChildValues(numberOfFormsAfterValue) { (error, ref) in
+                    Database.database().reference().child("Developer").child("Other").observeSingleEvent(of: .value) { (snapshot) in
                         
-                        if error != nil {
-                            print(error!)
+                        guard let dictionary = snapshot.value as? [String: AnyObject] else {
                             return
                         }
                         
-                        Database.database().reference().child("Developer").child("Forms").updateChildValues(formIDValue) { (error, ref) in
+                        let numberOfForms = dictionary["Number of Forms"] as? Int
+                        
+                        let numberOfFormsAfter = numberOfForms! + 1
+                        let numberOfFormsAfterValue = ["Number of Forms": numberOfFormsAfter]
+                        
+                        Database.database().reference().child("Developer").child("Other").updateChildValues(numberOfFormsAfterValue) { (error, ref) in
                             
                             if error != nil {
                                 print(error!)
                                 return
                             }
                             
-                            formRef.child(formKey!).child("Other").updateChildValues(formValue as [AnyHashable : Any]) { (error, ref) in
+                            Database.database().reference().child("Developer").child("Forms").updateChildValues(formIDValue) { (error, ref) in
                                 
                                 if error != nil {
                                     print(error!)
                                     return
                                 }
                                 
-                                DispatchQueue.main.async {
+                                formRef.child(formKey!).child("Other").updateChildValues(formValue as [AnyHashable : Any]) { (error, ref) in
                                     
-                                    self.tableView.isUserInteractionEnabled = true
+                                    if error != nil {
+                                        print(error!)
+                                        return
+                                    }
                                     
-                                    self.activityIndicator.stopAnimating()
-                                    barButton = UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(self.addNewForm))
-                                    self.navigationItem.rightBarButtonItem = barButton
-                                    
-                                    self.observeNumberOfForms()
+                                    DispatchQueue.main.async {
+                                        
+                                        self.tableView.isUserInteractionEnabled = true
+                                        
+                                        self.activityIndicator.stopAnimating()
+                                        barButton = UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(self.addNewForm))
+                                        self.navigationItem.rightBarButtonItem = barButton
+                                        
+                                        self.observeNumberOfForms()
+                                        
+                                    }
                                     
                                 }
                                 
@@ -499,12 +504,33 @@ extension DevFormListController {
                         
                     }
                     
+                } else {
+                    
+                    let popUp = UIAlertController(title: "We're sorry for the inconvenience", message: "Form title is already used", preferredStyle: .alert)
+                    popUp.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
+                        
+                        DispatchQueue.main.async {
+                            
+                            self.tableView.isUserInteractionEnabled = true
+                            
+                            self.activityIndicator.stopAnimating()
+                            barButton = UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(self.addNewForm))
+                            self.navigationItem.rightBarButtonItem = barButton
+                            
+                            self.observeNumberOfForms()
+                            
+                        }
+                        
+                    }))
+                    
+                    self.present(popUp, animated: true) {}
+                    
                 }
-                
+                    
             } else {
-                
+                    
             }
-            
+                
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
             
@@ -517,7 +543,8 @@ extension DevFormListController {
         
         let formController = FormController(style: .insetGrouped)
         formController.formID = developerForms[indexPath.row].id
-        
+        formController.formTitle = developerForms[indexPath.row].title
+        formController.userType = "Developer"
         navigationController?.pushViewController(formController, animated: true)
         
     }
@@ -526,6 +553,7 @@ extension DevFormListController {
         
         let fillFormController = FillFormController(style: .insetGrouped)
         fillFormController.formID = developerForms[indexPath.row].id
+        fillFormController.formTitle = developerForms[indexPath.row].title
         fillFormController.numberOfElement = numberOfElement
         
         navigationController?.pushViewController(fillFormController, animated: true)

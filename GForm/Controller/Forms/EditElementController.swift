@@ -82,13 +82,29 @@ class EditElementController: UITableViewController, UIColorPickerViewControllerD
             
             if elementMenus[indexPath.row].element == "Color" {
                 
+                let view = UIView()
+                view.backgroundColor = .clear
+                
+                let colorBox = UIView()
+                
                 if elementMenus[indexPath.row].selectedOption != "Not Selected" {
                     if elementMenus[indexPath.row].selectedOption == "#FFFFFF" {
-                        
+
                     } else {
-                        cell.detailTextLabel?.textColor = hexStringToUIColor(hex: elementMenus[indexPath.row].selectedOption!)
+                        colorBox.backgroundColor = hexStringToUIColor(hex: elementMenus[indexPath.row].selectedOption!)
                     }
                 }
+                
+                colorBox.layer.borderWidth = 1
+                colorBox.layer.borderColor = UIColor.label.cgColor
+                
+                cell.addSubview(view)
+                view.addSubview(colorBox)
+                
+                colorBox.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+                colorBox.anchor(nil, left: view.leftAnchor, bottom: nil, right: nil, topConstant: 0, leftConstant: eighty, bottomConstant: 0, rightConstant: 0, widthConstant: twentySix, heightConstant: sixteen)
+                
+                view.fillSuperview()
                 
             }
             

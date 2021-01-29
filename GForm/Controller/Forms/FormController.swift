@@ -12,6 +12,14 @@ class FormController: UITableViewController {
 
     var formID: String?
     
+    var formTitle: String? {
+        didSet {
+            navigationItem.title = formTitle
+        }
+    }
+    
+    var userType: String?
+    
     var refreshController = UIRefreshControl()
 
     let activityIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
@@ -166,13 +174,12 @@ extension FormController {
     
     private func setupNavbar() {
         
-        navigationItem.title = "Edit Form"
-        
         let addButton = UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(addNewElement))
+        let editFormNameButton = UIBarButtonItem(image: UIImage(named: "fillIcon"), style: .plain, target: self, action: #selector(changeFormMenu))
         
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        navigationItem.rightBarButtonItems = [addButton]
+        navigationItem.rightBarButtonItems = [addButton, editFormNameButton]
         
         activityIndicator.style = .medium
         
@@ -299,6 +306,62 @@ extension FormController {
         let createElementController = CreateElementController(style: .insetGrouped)
         createElementController.formID = formID
         navigationController?.pushViewController(createElementController, animated: true)
+        
+    }
+    
+    @objc private func changeFormMenu() {
+        
+        let alert = UIAlertController(title: "Change Form Title", message: "Enter your new form title", preferredStyle: .alert)
+        alert.addTextField { (textfield) in
+            textfield.placeholder = "Enter your form title"
+            textfield.text = self.navigationItem.title
+            textfield.layer.borderWidth = 0
+        }
+        alert.addAction(UIAlertAction(title: "Apply", style: .default, handler: { [self] (_) in
+            
+            let newTitle = alert.textFields![0].text
+            
+            if newTitle != navigationItem.title {
+                
+                if checkFormTitleAvailability(newtitle: newTitle!, type: userType!) {
+                    
+                    startLoadingSetup()
+                    
+                    let newTitleValue = ["Title": newTitle]
+                    
+                    Database.database().reference().child("Forms").child(formID!).child("Other").updateChildValues(newTitleValue as [AnyHashable : Any]) { (error, ref) in
+                        
+                        if error != nil {
+                            print(error!)
+                            return
+                        }
+                        
+                        DispatchQueue.main.async {
+                            self.endLoadingSetup()
+                            self.navigationItem.title = newTitle
+                            self.tableView.reloadData()
+                        }
+                        
+                    }
+                    
+                } else {
+                    
+                    let popUp = UIAlertController(title: "We're sorry for the inconvenience", message: "Form title is already used", preferredStyle: .alert)
+                    popUp.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
+                        
+                    }))
+                    
+                    self.present(popUp, animated: true) {}
+                    
+                }
+                
+            }
+            
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
+            
+        }))
+        self.present(alert, animated: true, completion: nil)
         
     }
     

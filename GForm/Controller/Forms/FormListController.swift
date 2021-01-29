@@ -180,10 +180,12 @@ class FormListController: UITableViewController {
         if menuSegmentedController.selectedSegmentIndex == 0 {
             responseListController.userType = "Private"
             responseListController.formID = privateForms[indexPath.row].id
+            responseListController.formTitle = privateForms[indexPath.row].title
             responseListController.numberOfResponse = privateForms[indexPath.row].numberOfResponse
         } else {
             responseListController.userType = "Developer"
             responseListController.formID = developerForms[indexPath.row].id
+            responseListController.formTitle = developerForms[indexPath.row].title
             responseListController.numberOfResponse = developerForms[indexPath.row].numberOfResponse
         }
         
@@ -675,59 +677,63 @@ extension FormListController {
             
             if formTitle != "" {
                 
-                guard let currentUID = Auth.auth().currentUser?.uid else {
-                    return
-                }
-                
-                let formRef = Database.database().reference().child("Forms")
-                let formKey = formRef.childByAutoId().key
-                let formIDValue = [formKey: 1]
-                
-                let timeStampNow = Double(NSDate().timeIntervalSince1970)
-                
-                let formValue = ["Title": formTitle as Any, "Element Count": 0, "Creation Timestamp": timeStampNow, "Number of Response": 0] as [String : Any]
-                
-                Database.database().reference().child("Users").child(currentUID).child("Other").observeSingleEvent(of: .value) { (snapshot) in
+                if checkFormTitleAvailability(newtitle: formTitle!, type: "Private") {
                     
-                    guard let dictionary = snapshot.value as? [String: AnyObject] else {
+                    guard let currentUID = Auth.auth().currentUser?.uid else {
                         return
                     }
                     
-                    let numberOfForms = dictionary["Number of Forms"] as? Int
+                    let formRef = Database.database().reference().child("Forms")
+                    let formKey = formRef.childByAutoId().key
+                    let formIDValue = [formKey: 1]
                     
-                    let numberOfFormsAfter = numberOfForms! + 1
-                    let numberOfFormsAfterValue = ["Number of Forms": numberOfFormsAfter]
+                    let timeStampNow = Double(NSDate().timeIntervalSince1970)
                     
-                    Database.database().reference().child("Users").child(currentUID).child("Other").updateChildValues(numberOfFormsAfterValue) { (error, ref) in
+                    let formValue = ["Title": formTitle as Any, "Element Count": 0, "Creation Timestamp": timeStampNow, "Number of Response": 0] as [String : Any]
+                    
+                    Database.database().reference().child("Users").child(currentUID).child("Other").observeSingleEvent(of: .value) { (snapshot) in
                         
-                        if error != nil {
-                            print(error!)
+                        guard let dictionary = snapshot.value as? [String: AnyObject] else {
                             return
                         }
                         
-                        Database.database().reference().child("Users").child(currentUID).child("Forms").updateChildValues(formIDValue) { (error, ref) in
+                        let numberOfForms = dictionary["Number of Forms"] as? Int
+                        
+                        let numberOfFormsAfter = numberOfForms! + 1
+                        let numberOfFormsAfterValue = ["Number of Forms": numberOfFormsAfter]
+                        
+                        Database.database().reference().child("Users").child(currentUID).child("Other").updateChildValues(numberOfFormsAfterValue) { (error, ref) in
                             
                             if error != nil {
                                 print(error!)
                                 return
                             }
                             
-                            formRef.child(formKey!).child("Other").updateChildValues(formValue as [AnyHashable : Any]) { (error, ref) in
+                            Database.database().reference().child("Users").child(currentUID).child("Forms").updateChildValues(formIDValue) { (error, ref) in
                                 
                                 if error != nil {
                                     print(error!)
                                     return
                                 }
                                 
-                                DispatchQueue.main.async {
+                                formRef.child(formKey!).child("Other").updateChildValues(formValue as [AnyHashable : Any]) { (error, ref) in
                                     
-                                    self.tableView.isUserInteractionEnabled = true
+                                    if error != nil {
+                                        print(error!)
+                                        return
+                                    }
                                     
-                                    self.activityIndicator.stopAnimating()
-                                    barButton = UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(self.addNewForm))
-                                    self.navigationItem.rightBarButtonItem = barButton
-                                    
-                                    self.observeUserNumberOfForms()
+                                    DispatchQueue.main.async {
+                                        
+                                        self.tableView.isUserInteractionEnabled = true
+                                        
+                                        self.activityIndicator.stopAnimating()
+                                        barButton = UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(self.addNewForm))
+                                        self.navigationItem.rightBarButtonItem = barButton
+                                        
+                                        self.observeUserNumberOfForms()
+                                        
+                                    }
                                     
                                 }
                                 
@@ -736,6 +742,27 @@ extension FormListController {
                         }
                         
                     }
+                    
+                } else {
+                    
+                    let popUp = UIAlertController(title: "We're sorry for the inconvenience", message: "Form title is already used", preferredStyle: .alert)
+                    popUp.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
+                        
+                        DispatchQueue.main.async {
+                            
+                            self.tableView.isUserInteractionEnabled = true
+                            
+                            self.activityIndicator.stopAnimating()
+                            barButton = UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(self.addNewForm))
+                            self.navigationItem.rightBarButtonItem = barButton
+                            
+                            self.observeUserNumberOfForms()
+                            
+                        }
+                        
+                    }))
+                    
+                    self.present(popUp, animated: true) {}
                     
                 }
                 
@@ -757,8 +784,12 @@ extension FormListController {
         
         if menuSegmentedController.selectedSegmentIndex == 0 {
             formController.formID = privateForms[indexPath.row].id
+            formController.formTitle = privateForms[indexPath.row].title
+            formController.userType = "Private"
         } else {
             formController.formID = developerForms[indexPath.row].id
+            formController.formTitle = developerForms[indexPath.row].title
+            formController.userType = "Developer"
         }
         
         navigationController?.pushViewController(formController, animated: true)
@@ -771,9 +802,11 @@ extension FormListController {
         
         if menuSegmentedController.selectedSegmentIndex == 0 {
             fillFormController.formID = privateForms[indexPath.row].id
+            fillFormController.formTitle = privateForms[indexPath.row].title
             fillFormController.numberOfElement = numberOfUserFormElement
         } else {
             fillFormController.formID = developerForms[indexPath.row].id
+            fillFormController.formTitle = privateForms[indexPath.row].title
             fillFormController.numberOfElement = numberOfDevFormElement
         }
         

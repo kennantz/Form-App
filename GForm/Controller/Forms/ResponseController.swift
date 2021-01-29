@@ -12,6 +12,12 @@ class ResponseController: UITableViewController, UITextFieldDelegate {
     
     var formID: String?
     
+    var formTitle: String? {
+        didSet {
+            navigationItem.title = formTitle
+        }
+    }
+    
     var userType: String?
     
     var numberOfResponse: Int? {
@@ -151,8 +157,6 @@ class ResponseController: UITableViewController, UITextFieldDelegate {
 extension ResponseController {
     
     private func setupNavbar() {
-        
-        navigationItem.title = "Responses"
         
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
