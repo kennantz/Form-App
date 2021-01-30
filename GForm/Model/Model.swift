@@ -44,20 +44,6 @@ class ElementMenu: NSObject {
     var selectedOption: String?
 }
 
-var responseElementsDictionary = [String: ResponseElement]()
-
-var responseElements = [ResponseElement]()
-
-class ResponseElement: NSObject {
-    var id: String?
-    var title: String?
-    var dataType: String?
-    var seqNo: String?
-    var color: String?
-    var response: String?
-    var responses: [String]?
-}
-
 var fillElementsDictionary = [String: FillElement]()
 
 var fillElements = [FillElement]()
@@ -77,12 +63,6 @@ var developerMenus = [DeveloperMenu]()
 class DeveloperMenu: NSObject {
     var id: String?
     var title: String?
-}
-
-var userResponseLists = [UserResponseList]()
-
-class UserResponseList: NSObject {
-    var id: String?
 }
 
 var userResponses = [UserResponse]()

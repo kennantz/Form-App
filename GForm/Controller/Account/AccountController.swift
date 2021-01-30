@@ -192,7 +192,7 @@ extension AccountController {
     
     private func handleLogOut() {
         
-        let popUp = UIAlertController(title: "Confirmation", message: "Are you sure you want to log out?", preferredStyle: .alert)
+        let popUp = UIAlertController(title: logoutConfirmationTitle, message: logoutConfirmationMessage, preferredStyle: .alert)
         popUp.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
             
             do {

@@ -31,7 +31,7 @@ class SetupColumnController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         
-        observeNumberOfMenu()
+        observeNumberOfColumn()
         
     }
     
@@ -66,7 +66,7 @@ class SetupColumnController: UITableViewController {
             
             let menuID = developerMenus[indexPath.row].id
             
-            let popUp = UIAlertController(title: "Confirmation", message: "Are you sure want to delete this menu?", preferredStyle: .alert)
+            let popUp = UIAlertController(title: deleteDeveloperMenuConfirmationTitle, message: deleteDeveloperMenuConfirmationMessage, preferredStyle: .alert)
             popUp.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { (action) in
                 
                 var barButton = UIBarButtonItem(customView: self.activityIndicator)
@@ -103,7 +103,7 @@ class SetupColumnController: UITableViewController {
                             
                             self.activityIndicator.stopAnimating()
                             
-                            barButton = UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(self.addNewMenu))
+                            barButton = UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(self.addNewColumn))
                             self.navigationItem.rightBarButtonItem = barButton
                             
                             self.navigationController?.navigationBar.isUserInteractionEnabled = true
@@ -113,7 +113,7 @@ class SetupColumnController: UITableViewController {
                             tableView.deleteRows(at: [indexPath], with: .fade)
                             
                             if elements.count == 0 {
-                                self.observeNumberOfMenu()
+                                self.observeNumberOfColumn()
                             }
                             
                         }
@@ -141,11 +141,11 @@ extension SetupColumnController {
     private func setupNavbar() {
         
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.setRightBarButton(UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(addNewMenu)), animated: true)
+        navigationItem.setRightBarButton(UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(addNewColumn)), animated: true)
         
     }
     
-    private func observeNumberOfMenu() {
+    private func observeNumberOfColumn() {
         
         developerMenus.removeAll()
         
@@ -169,7 +169,7 @@ extension SetupColumnController {
                 
                 DispatchQueue.main.async {
                     self.noElementLabel.alpha = 0
-                    self.observeMenus()
+                    self.observeColumns()
                 }
                 
             } else {
@@ -182,7 +182,7 @@ extension SetupColumnController {
                     
                     self.activityIndicator.stopAnimating()
                     
-                    barButton = UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(self.addNewMenu))
+                    barButton = UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(self.addNewColumn))
                     self.navigationItem.rightBarButtonItem = barButton
                     
                     self.navigationController?.navigationBar.isUserInteractionEnabled = true
@@ -198,7 +198,7 @@ extension SetupColumnController {
         
     }
     
-    private func observeMenus() {
+    private func observeColumns() {
         
         developerMenus.removeAll()
         
@@ -222,7 +222,7 @@ extension SetupColumnController {
                     
                     self.activityIndicator.stopAnimating()
                     
-                    let barButton = UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(self.addNewMenu))
+                    let barButton = UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(self.addNewColumn))
                     self.navigationItem.rightBarButtonItem = barButton
                     
                     self.navigationController?.navigationBar.isUserInteractionEnabled = true
@@ -238,7 +238,7 @@ extension SetupColumnController {
         
     }
     
-    @objc private func addNewMenu() {
+    @objc private func addNewColumn() {
         
         Database.database().reference().child("Developer").child("Menus").removeAllObservers()
         
@@ -289,13 +289,13 @@ extension SetupColumnController {
                             
                             self.activityIndicator.stopAnimating()
                             
-                            barButton = UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(self.addNewMenu))
+                            barButton = UIBarButtonItem(image: UIImage(named: "addIcon"), style: .plain, target: self, action: #selector(self.addNewColumn))
                             self.navigationItem.rightBarButtonItem = barButton
                             
                             self.navigationController?.navigationBar.isUserInteractionEnabled = true
                             self.navigationController?.view.isUserInteractionEnabled = true
                             
-                            self.observeMenus()
+                            self.observeColumns()
                             
                         }
                         

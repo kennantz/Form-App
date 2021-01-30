@@ -150,7 +150,7 @@ extension SignInController {
         
         if email == "" || password == "" {
             
-            let popUp = UIAlertController(title: "We're sorry for the inconvenience", message: "Please fill in all data required", preferredStyle: .alert)
+            let popUp = UIAlertController(title: fillInAllDataRequiredTitle, message: fillInAllDataRequiredMessage, preferredStyle: .alert)
             popUp.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
                 
             }))
@@ -167,7 +167,7 @@ extension SignInController {
                 
                 if error != nil{
                     
-                    let popUp = UIAlertController(title: "We're sorry for the inconvenience", message: error?.localizedDescription, preferredStyle: .alert)
+                    let popUp = UIAlertController(title: signInSignUpFailedTitle, message: error?.localizedDescription, preferredStyle: .alert)
                     popUp.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
                         
                         self.emailTextField.text = ""

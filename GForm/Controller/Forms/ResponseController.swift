@@ -129,7 +129,7 @@ class ResponseController: UITableViewController, UITextFieldDelegate {
         
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let popUp = UIAlertController(title: "Confirmation", message: "Do you want to edit or delete this response?", preferredStyle: .actionSheet)
+        let popUp = UIAlertController(title: editDeleteResponseConfirmationTitle, message: editDeleteResponseConfirmationMessage, preferredStyle: .actionSheet)
         popUp.addAction(UIAlertAction(title: "Edit Element", style: .default, handler: { (action) in
             
             self.handleEditResponseElement(indexPath: indexPath)
@@ -373,7 +373,7 @@ extension ResponseController {
     
     private func handleDeleteResponse(indexPath: IndexPath) {
         
-        let popUp = UIAlertController(title: "Confirmation", message: "Are you sure want to delete this response?", preferredStyle: .alert)
+        let popUp = UIAlertController(title: deleteResponseConfirmationTitle, message: deleteResponseConfirmationMessage, preferredStyle: .alert)
         popUp.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { (action) in
             
             self.tableView.isUserInteractionEnabled = false

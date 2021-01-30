@@ -280,7 +280,7 @@ extension FillFormController {
             
             if item.response == "" {
                 
-                let popUp = UIAlertController(title: "We're sorry for the inconvenience", message: "Please fill in all field required", preferredStyle: .alert)
+                let popUp = UIAlertController(title: fillInAllDataRequiredTitle, message: fillInAllDataRequiredMessage, preferredStyle: .alert)
                 popUp.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
                     
                     
@@ -304,206 +304,108 @@ extension FillFormController {
         
     }
     
-//    private func handleSubmitForm() {
-//
-//        guard let currentUID = Auth.auth().currentUser?.uid else {
-//            return
-//        }
-//
-//        if numberOfElement == 0 {
-//
-//        } else {
-//
-//            self.tableView.isUserInteractionEnabled = false
-//
-//            var barButton = UIBarButtonItem(customView: activityIndicator)
-//            self.navigationItem.rightBarButtonItem = barButton
-//
-//            activityIndicator.startAnimating()
-//
-//            var counter = 0
-//
-//            Database.database().reference().child("Forms").child(self.formID!).child("Other").observeSingleEvent(of: .value) { (snapshot) in
-//
-//                guard let dictionary = snapshot.value as? [String: AnyObject] else {
-//                    return
-//                }
-//
-//                let numberOfResponse = dictionary["Number of Response"] as? Int
-//                let numberOfResponseAfter = numberOfResponse! + 1
-//                let numberOfResponseAfterValue = ["Number of Response": numberOfResponseAfter]
-//
-//                Database.database().reference().child("Forms").child(self.formID!).child("Other").updateChildValues(numberOfResponseAfterValue) { (error, ref) in
-//
-//                    if error != nil {
-//                        print(error!)
-//                        return
-//                    }
-//
-//                    for item in fillElements {
-//
-//                        let elementID = item.id
-//                        let responseValue = ["Response": item.response, "User ID": currentUID]
-//
-//                        let responsesRef = Database.database().reference().child("Responses").childByAutoId()
-//                        let responseKey = responsesRef.key
-//
-//                        let responseIDValue = [responseKey: 1]
-//
-//                        Database.database().reference().child("Elements").child(elementID!).child("Responses").updateChildValues(responseIDValue) { (error, ref) in
-//
-//                            if error != nil {
-//                                print(error!)
-//                                return
-//                            }
-//
-//                        }
-//
-//                        responsesRef.updateChildValues(responseValue as [AnyHashable : Any]) { (error, ref) in
-//
-//                            if error != nil {
-//                                print(error!)
-//                                return
-//                            }
-//
-//                            if counter == fillElements.count - 1 {
-//
-//                                self.activityIndicator.stopAnimating()
-//
-//                                barButton = UIBarButtonItem(title: "Submit", style: .plain, target: self, action: #selector(self.handleCheckSubmitForm))
-//                                self.navigationItem.rightBarButtonItem = barButton
-//
-//                                self.tableView.isUserInteractionEnabled = true
-//
-//                                let alert = UIAlertController(title: "Your response has been submitted successfully!", message: "Thankyou for filling this form😊", preferredStyle: .alert)
-//
-//                                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [self] (_) in
-//
-//                                    self.navigationController?.popViewController(animated: true)
-//
-//                                }))
-//                                self.present(alert, animated: true, completion: nil)
-//
-//                            } else {
-//
-//                                counter += 1
-//
-//                            }
-//
-//                        }
-//
-//                    }
-//
-//                }
-//
-//            }
-//
-//        }
-//
-//    }
-    
     private func handleSubmitForm() {
             
-            self.tableView.isUserInteractionEnabled = false
+        self.tableView.isUserInteractionEnabled = false
 
-            var barButton = UIBarButtonItem(customView: activityIndicator)
-            self.navigationItem.rightBarButtonItem = barButton
+        var barButton = UIBarButtonItem(customView: activityIndicator)
+        self.navigationItem.rightBarButtonItem = barButton
 
-            activityIndicator.startAnimating()
+        activityIndicator.startAnimating()
 
-            guard let currentUID = Auth.auth().currentUser?.uid else {
+        guard let currentUID = Auth.auth().currentUser?.uid else {
+            return
+        }
+
+        var counter = 0
+
+        let responsesRef = Database.database().reference().child("Responses").childByAutoId()
+        let responseKey = responsesRef.key
+
+        let userIDResponseValue = ["User ID": currentUID]
+
+        responsesRef.child("Other").updateChildValues(userIDResponseValue) { (error, ref) in
+
+            if error != nil {
+                print(error!)
                 return
             }
 
-            var counter = 0
+            let responseIDValue = [responseKey: 1]
 
-            let responsesRef = Database.database().reference().child("Responses").childByAutoId()
-            let responseKey = responsesRef.key
-
-            let userIDResponseValue = ["User ID": currentUID]
-
-            responsesRef.child("Other").updateChildValues(userIDResponseValue) { (error, ref) in
+            Database.database().reference().child("Forms").child(self.formID!).child("Responses").updateChildValues(responseIDValue) { (error, ref) in
 
                 if error != nil {
                     print(error!)
                     return
                 }
 
-                let responseIDValue = [responseKey: 1]
+                Database.database().reference().child("Forms").child(self.formID!).child("Other").observeSingleEvent(of: .value) { (snapshot) in
 
-                Database.database().reference().child("Forms").child(self.formID!).child("Responses").updateChildValues(responseIDValue) { (error, ref) in
-
-                    if error != nil {
-                        print(error!)
+                    guard let dictionary = snapshot.value as? [String: AnyObject] else {
                         return
                     }
 
-                    Database.database().reference().child("Forms").child(self.formID!).child("Other").observeSingleEvent(of: .value) { (snapshot) in
+                    let numberOfResponse = dictionary["Number of Response"] as? Int
+                    let numberOfResponseAfter = numberOfResponse! + 1
+                    let numberOfResponseAfterValue = ["Number of Response": numberOfResponseAfter]
 
-                        guard let dictionary = snapshot.value as? [String: AnyObject] else {
+                    Database.database().reference().child("Forms").child(self.formID!).child("Other").updateChildValues(numberOfResponseAfterValue) { (error, ref) in
+
+                        if error != nil {
+                            print(error!)
                             return
                         }
 
-                        let numberOfResponse = dictionary["Number of Response"] as? Int
-                        let numberOfResponseAfter = numberOfResponse! + 1
-                        let numberOfResponseAfterValue = ["Number of Response": numberOfResponseAfter]
-
-                        Database.database().reference().child("Forms").child(self.formID!).child("Other").updateChildValues(numberOfResponseAfterValue) { (error, ref) in
-
-                            if error != nil {
-                                print(error!)
-                                return
-                            }
-
-                            for item in fillElements {
+                        for item in fillElements {
                                 
-                                let elementID = item.id
-                                let responseValue = ["Response": item.response]
+                            let elementID = item.id
+                            let responseValue = ["Response": item.response]
                                 
-                                responsesRef.child("Elements").child(elementID!).updateChildValues(responseValue as [AnyHashable : Any]) { (error, ref) in
+                            responsesRef.child("Elements").child(elementID!).updateChildValues(responseValue as [AnyHashable : Any]) { (error, ref) in
 
-                                    if error != nil {
-                                        print(error!)
-                                        return
-                                    }
-                                    
-                                    if counter == fillElements.count - 1 {
-                                        
-                                        self.activityIndicator.stopAnimating()
-
-                                        barButton = UIBarButtonItem(title: "Submit", style: .plain, target: self, action: #selector(self.handleCheckSubmitForm))
-                                        self.navigationItem.rightBarButtonItem = barButton
-
-                                        self.tableView.isUserInteractionEnabled = true
-
-                                        let alert = UIAlertController(title: "Your response has been submitted successfully!", message: "Thankyou for filling this form😊", preferredStyle: .alert)
-
-                                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [self] (_) in
-
-                                            self.navigationController?.popViewController(animated: true)
-
-                                        }))
-                                        self.present(alert, animated: true, completion: nil)
-                                        
-                                    } else {
-                                        
-                                        counter += 1
-                                        
-                                    }
-                                    
+                                if error != nil {
+                                    print(error!)
+                                    return
                                 }
-                                
-                            }
-                            
-                        }
+                                    
+                                if counter == fillElements.count - 1 {
+                                        
+                                    self.activityIndicator.stopAnimating()
 
+                                    barButton = UIBarButtonItem(title: "Submit", style: .plain, target: self, action: #selector(self.handleCheckSubmitForm))
+                                    self.navigationItem.rightBarButtonItem = barButton
+
+                                    self.tableView.isUserInteractionEnabled = true
+
+                                    let alert = UIAlertController(title: "Your response has been submitted successfully!", message: "Thankyou for filling this form😊", preferredStyle: .alert)
+
+                                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [self] (_) in
+
+                                        self.navigationController?.popViewController(animated: true)
+
+                                    }))
+                                    self.present(alert, animated: true, completion: nil)
+                                    
+                                } else {
+                                        
+                                    counter += 1
+                                        
+                                }
+                                    
+                            }
+                                
+                        }
+                            
                     }
 
                 }
 
             }
-            
+
         }
+            
+    }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         

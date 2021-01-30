@@ -318,7 +318,7 @@ extension CreateElementController {
         
         if title == "Not Selected" || dataType == "Not Selected" || order == "Not Selected" || color == "Not Selected" {
             
-            let popUp = UIAlertController(title: "We're sorry for the inconvenience", message: "Please fill in all data required", preferredStyle: .alert)
+            let popUp = UIAlertController(title: fillInAllDataRequiredTitle, message: fillInAllDataRequiredMessage, preferredStyle: .alert)
             popUp.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
                 
             }))

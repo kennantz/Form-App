@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		BF0219CB25C3CE25006816B6 /* FormService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0219CA25C3CE25006816B6 /* FormService.swift */; };
+		BF021A0625C56827006816B6 /* AlertMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF021A0525C56827006816B6 /* AlertMessage.swift */; };
 		BF18A75425A4840F005A028D /* DeveloperController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18A75325A4840F005A028D /* DeveloperController.swift */; };
 		BF8A65DA259F02E100481410 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8A65D9259F02E100481410 /* AppDelegate.swift */; };
 		BF8A65DC259F02E100481410 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8A65DB259F02E100481410 /* SceneDelegate.swift */; };
@@ -37,6 +38,7 @@
 /* Begin PBXFileReference section */
 		93E3A7F0B215A618E9467241 /* Pods-GForm.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GForm.debug.xcconfig"; path = "Target Support Files/Pods-GForm/Pods-GForm.debug.xcconfig"; sourceTree = "<group>"; };
 		BF0219CA25C3CE25006816B6 /* FormService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormService.swift; sourceTree = "<group>"; };
+		BF021A0525C56827006816B6 /* AlertMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertMessage.swift; sourceTree = "<group>"; };
 		BF18A75325A4840F005A028D /* DeveloperController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperController.swift; sourceTree = "<group>"; };
 		BF523CEE837E0A12B13EC56A /* Pods_GForm.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GForm.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF8A65D6259F02E100481410 /* GForm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GForm.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -145,6 +147,7 @@
 			isa = PBXGroup;
 			children = (
 				BF94ED80259F19F5000E3F3B /* Model.swift */,
+				BF021A0525C56827006816B6 /* AlertMessage.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -329,6 +332,7 @@
 				BF18A75425A4840F005A028D /* DeveloperController.swift in Sources */,
 				BFA06CF1259F068E001D2924 /* SignUpController.swift in Sources */,
 				BF94ED8E25A04444000E3F3B /* EditElementController.swift in Sources */,
+				BF021A0625C56827006816B6 /* AlertMessage.swift in Sources */,
 				BFA06CEA259F0644001D2924 /* Extension.swift in Sources */,
 				BF94ED87259F481D000E3F3B /* FormController.swift in Sources */,
 				BFA06CE3259F060E001D2924 /* AutoLayout.swift in Sources */,

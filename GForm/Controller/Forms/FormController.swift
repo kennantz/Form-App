@@ -78,7 +78,7 @@ class FormController: UITableViewController {
         
         if editingStyle == .delete {
             
-            let popUp = UIAlertController(title: "Confirmation", message: "Are you sure want to delete this element?", preferredStyle: .alert)
+            let popUp = UIAlertController(title: deleteElementConfirmationTitle, message: deleteElementConfirmationMessage, preferredStyle: .alert)
             popUp.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { (action) in
                 
                 self.startLoadingSetup()
@@ -346,7 +346,7 @@ extension FormController {
                     
                 } else {
                     
-                    let popUp = UIAlertController(title: "We're sorry for the inconvenience", message: "Form title is already used", preferredStyle: .alert)
+                    let popUp = UIAlertController(title: formTitleAlreadyUsedTitle, message: formTitleAlreadyUsedMessage, preferredStyle: .alert)
                     popUp.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
                         
                     }))

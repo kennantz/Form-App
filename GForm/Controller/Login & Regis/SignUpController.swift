@@ -201,7 +201,7 @@ extension SignUpController {
         
         if name == "" || email == "" || password == "" || confirmPassword == "" {
             
-            let popUp = UIAlertController(title: "We're sorry for the inconvenience", message: "Please fill in all sign up data required", preferredStyle: .alert)
+            let popUp = UIAlertController(title: fillInAllDataRequiredTitle, message: fillInAllDataRequiredMessage, preferredStyle: .alert)
             popUp.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
                 
             }))
@@ -210,7 +210,7 @@ extension SignUpController {
             
         } else if emailValidation != true {
             
-            let popUp = UIAlertController(title: "We're sorry for the inconvenience", message: "Please use a valid email address", preferredStyle: .alert)
+            let popUp = UIAlertController(title: emailValidationTitle, message: emailValidationMessage, preferredStyle: .alert)
             popUp.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
                 self.emailTextField.text = ""
             }))
@@ -219,7 +219,7 @@ extension SignUpController {
             
         } else if passwordValidation != true {
             
-            let popUp = UIAlertController(title: "We're sorry for the inconvenience", message: "Password must contain at least one uppercase character and number with minimum of 8 characters long", preferredStyle: .alert)
+            let popUp = UIAlertController(title: passwordValidationTitle, message: passwordValidationMessage, preferredStyle: .alert)
             popUp.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
                 self.passwordTextField.text = ""
                 self.confirmPasswordTextField.text = ""
@@ -229,7 +229,7 @@ extension SignUpController {
             
         } else if password != confirmPassword {
             
-            let popUp = UIAlertController(title: "We're sorry for the inconvenience", message: "The confirm password confirmation does not match", preferredStyle: .alert)
+            let popUp = UIAlertController(title: confirmPasswordValidationTitle, message: confirmPasswordValidationMessage, preferredStyle: .alert)
             popUp.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
                 self.passwordTextField.text = ""
                 self.confirmPasswordTextField.text = ""
@@ -246,7 +246,19 @@ extension SignUpController {
             Auth.auth().createUser(withEmail: email!, password: password!) { (user, error) in
                 
                 if error != nil {
-                    print(error!)
+                    
+                    let popUp = UIAlertController(title: signInSignUpFailedTitle, message: error?.localizedDescription, preferredStyle: .alert)
+                    popUp.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
+                        
+                        self.signUpButtonLoadingAnimation.stopAnimating()
+                        self.signUpButton.setTitle("SIGN UP", for: .normal)
+                        
+                        self.handleKeyboardDismiss()
+                        
+                    }))
+                    
+                    self.present(popUp, animated: true) {}
+                    
                     return
                 }
                 
